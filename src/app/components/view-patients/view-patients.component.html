@@ -1,0 +1,28 @@
+<p>view-patients works!</p>
+<div class="card">
+    <p-table [value]="patients" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template #header>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>State</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-patient>
+            <tr>
+                <td>{{ patient.firstName }}</td>
+                <td>{{ patient.lastName }}</td>
+                <td>{{ patient.state }}</td>
+                <td>{{ patient.status }}</td>
+                <td>
+                    <div class="flex gap-base">
+                        <div class="cursor-pointer"><i class="pi pi-pencil text-blue-700"></i></div>
+                        <div class="cursor-pointer"><i class="pi pi-trash text-red-500"></i></div>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

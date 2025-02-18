@@ -25,6 +25,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { RouterOutlet } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule,RouterModule,RouterOutlet,ButtonModule, SelectButtonModule, RadioButtonModule, MultiSelect, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule,CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, NgClass, IconFieldModule, InputIconModule, DrawerModule],
@@ -33,5 +34,19 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+  email: string = '';
+  password: string = '';
+  rememberMe: boolean = false;
 
+  constructor(private router: Router) {}
+
+  onSubmit() {
+    // Add your login logic here
+    console.log('Email:', this.email);
+    console.log('Password:', this.password);
+    console.log('Remember Me:', this.rememberMe);
+    
+    // On successful login, navigate to the dashboard or desired route
+    this.router.navigate(['/dashboard']);
+  }
 }

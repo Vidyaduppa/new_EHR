@@ -1,28 +1,97 @@
-<p>view-patients works!</p>
 <div class="card">
-    <p-table [value]="patients" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template #header>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>State</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </ng-template>
-        <ng-template #body let-patient>
-            <tr>
-                <td>{{ patient.firstName }}</td>
-                <td>{{ patient.lastName }}</td>
-                <td>{{ patient.state }}</td>
-                <td>{{ patient.status }}</td>
-                <td>
-                    <div class="flex gap-base">
-                        <div class="cursor-pointer"><i class="pi pi-pencil text-blue-700"></i></div>
-                        <div class="cursor-pointer"><i class="pi pi-trash text-red-500"></i></div>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
+    <p-table
+      #dt
+      [value]="patients"
+      dataKey="id"
+      [rows]="10"  
+      [rowsPerPageOptions]="[10, 25, 50]" 
+      [paginator]="true"
+      [totalRecords]="totalRecords" 
+      [loading]="false"
+      (onPage)="onPageChange($event)"  
+      [globalFilterFields]="['first_name', 'last_name', 'state', 'status']"
+      [tableStyle]="{ 'min-width': '75rem' }"
+    >
+      <!-- Table Caption -->
+      <ng-template #caption>
+        <div class="flex items-center">
+          <h5>Patient List</h5>
+          <div class="flex items-center gap-sm ml-auto">
+            <!-- Filter by State -->
+            <p-columnFilter
+              type="text"
+              field="state"
+              placeholder="Filter by State"
+              ariaLabel="Filter State"
+            ></p-columnFilter>
+  
+            <!-- Filter by Status -->
+            <p-dropdown
+              [options]="statusOptions"
+              [(ngModel)]="selectedStatus"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Filter by Status"
+              (onChange)="onStatusFilterChange($event, dt)"
+            ></p-dropdown>
+  
+            <!-- Global Search -->
+            <p-iconField iconPosition="left">
+              <input
+                pInputText
+                type="text"
+                (input)="onGlobalSearch($event, dt)"
+                placeholder="Search by First Name or Last Name"
+              />
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+            </p-iconField>
+          </div>
+        </div>
+      </ng-template>
+  
+      <!-- Table Header -->
+      <ng-template #header>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Mobile Number</th>
+          <th>State</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+  
+      <!-- Table Body -->
+      <ng-template #body let-patient>
+        <tr>
+          <td>{{ patient.first_name }}</td>
+          <td>{{ patient.last_name }}</td>
+          <td>{{ patient.email }}</td>
+          <td>{{ patient.mobile_phone }}</td>
+          <td>{{ patient.state }}</td>
+          <td>
+            <p-tag
+              [value]="patient.status ? 'Active' : 'Inactive'"
+              [severity]="patient.status ? 'success' : 'danger'"
+            ></p-tag>
+          </td>
+          <td>
+            <div class="flex gap-base">
+              <!-- Edit Button -->
+              <div class="cursor-pointer">
+                <i class="pi pi-pencil text-blue-700" (click)="editPatient(patient)"></i>
+              </div>
+              <!-- Delete Button -->
+              <div class="cursor-pointer">
+                <i class="pi pi-trash text-red-500" (click)="deletePatient(patient._id)"></i>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
     </p-table>
-</div>
+  </div>
+  

@@ -1,227 +1,233 @@
 <div class="grid grid-rows-1 grid-flow-col gap-4">
-    <div class="card w-[50rem] mx-auto">
-      <h5 class="mb-base">Patient Registration Form</h5>
-      <div>
-        <!-- First Name -->
-        <div class="flex flex-col gap-2 field">
-          <label for="firstname">First Name</label>
-          <input
-            pInputText
-            id="firstname"
-            [(ngModel)]="patient.first_name"
-            placeholder="John"
-            maxlength="35"
-            required
-          />
-        </div>
- 
-        <!-- Last Name -->
-        <div class="flex flex-col gap-2 field">
-          <label for="lastname">Last Name</label>
-          <input
-            pInputText
-            id="lastname"
-            [(ngModel)]="patient.last_name"
-            placeholder="Doe"
-            maxlength="35"
-            required
-          />
-        </div>
- 
-        <!-- Email -->
-        <div class="flex flex-col gap-2 field">
-          <label for="email">Email</label>
-          <input
-            pInputText
-            id="email"
-            [(ngModel)]="patient.email"
-            placeholder="name@example.com"
-            type="email"
-            required
-          />
-        </div>
- 
-        <!-- Mobile Phone -->
-        <div class="flex flex-col gap-2 field">
-          <label for="mobile_phone">Mobile Phone</label>
-          <input
-            pInputText
-            id="mobile_phone"
-            [(ngModel)]="patient.mobile_phone"
-            placeholder="1234567890"
-            maxlength="10"
-            required
-          />
-        </div>
- 
-        <!-- Address Line 1 -->
-        <div class="flex flex-col gap-2 field">
-          <label for="address_line_1">Address Line 1</label>
-          <input
-            pInputText
-            id="address_line_1"
-            [(ngModel)]="patient.address_line_1"
-            placeholder="123 Main St"
-            maxlength="40"
-            required
-          />
-        </div>
- 
-        <!-- Address Line 2 -->
-        <div class="flex flex-col gap-2 field">
-          <label for="address_line_2">Address Line 2</label>
-          <input
-            pInputText
-            id="address_line_2"
-            [(ngModel)]="patient.address_line_2"
-            placeholder="Apt 4B"
-            maxlength="100"
-          />
-        </div>
- 
-        <!-- City -->
-        <div class="flex flex-col gap-2 field">
-          <label for="city">City</label>
-          <p-dropdown
-            id="city"
-            [(ngModel)]="patient.city"
-            [options]="cities"
-            optionLabel="name"
-            placeholder="Select a City"
-            class="w-full"
-          ></p-dropdown>
-        </div>
- 
-        <!-- State -->
-        <div class="flex flex-col gap-2 field">
-          <label for="state">State</label>
-          <p-dropdown
-            id="state"
-            [(ngModel)]="patient.state"
-            [options]="states"
-            optionLabel="name"
-            placeholder="Select a State"
-            class="w-full"
-          ></p-dropdown>
-        </div>
- 
-        <!-- Country -->
-        <div class="flex flex-col gap-2 field">
-          <label for="country">Country</label>
-          <p-dropdown
-            id="country"
-            [(ngModel)]="patient.country"
-            [options]="countries"
-            optionLabel="name"
-            placeholder="Select a Country"
-            class="w-full"
-          ></p-dropdown>
-        </div>
- 
-        <!-- Zipcode -->
-        <div class="flex flex-col gap-2 field">
-          <label for="zipcode">Zipcode</label>
-          <input
-            pInputText
-            id="zipcode"
-            [(ngModel)]="patient.zipcode"
-            placeholder="12345"
-            maxlength="9"
-            required
-          />
-        </div>
- 
-        <!-- Date of Birth -->
-        <!-- <div class="flex flex-col gap-2 field">
-          <label for="dob">Date of Birth</label>
-          <p-calendar
-            id="dob"
-            [(ngModel)]="patient.dob"
-            dateFormat="mm/dd/yy"
-            placeholder="Select a Date"
-            class="w-full"
-          ></p-calendar>
-        </div> -->
-        <div class="flex flex-col gap-2 field ">
-            <label for="username">Date of Birth</label>
-            <p-datepicker  class="w-full "/>
- 
-        </div>
- 
-        <!-- Gender -->
-        <div class="flex flex-col gap-2 field">
-          <label>Gender</label>
-          <div class="flex flex-wrap gap-4">
-            <div class="flex items-center">
-              <p-radioButton
-                name="gender"
-                value="male"
-                [(ngModel)]="patient.gender"
-                inputId="gender1"
-              ></p-radioButton>
-              <label for="gender1" class="ml-2">Male</label>
-            </div>
-            <div class="flex items-center">
-              <p-radioButton
-                name="gender"
-                value="female"
-                [(ngModel)]="patient.gender"
-                inputId="gender2"
-              ></p-radioButton>
-              <label for="gender2" class="ml-2">Female</label>
-            </div>
-            <div class="flex items-center">
-              <p-radioButton
-                name="gender"
-                value="other"
-                [(ngModel)]="patient.gender"
-                inputId="gender3"
-              ></p-radioButton>
-              <label for="gender3" class="ml-2">Other</label>
-            </div>
+  <div class="card w-[50rem] mx-auto">
+    <h5 class="mb-base">Patient Registration Form</h5>
+    <div>
+      <!-- First Name -->
+      <div class="flex flex-col gap-2 field">
+        <label for="firstname">First Name</label>
+        <input
+          pInputText
+          id="firstname"
+          [(ngModel)]="patient.first_name"
+          placeholder="John"
+          maxlength="35"
+          required
+        />
+      </div>
+
+      <!-- Last Name -->
+      <div class="flex flex-col gap-2 field">
+        <label for="lastname">Last Name</label>
+        <input
+          pInputText
+          id="lastname"
+          [(ngModel)]="patient.last_name"
+          placeholder="Doe"
+          maxlength="35"
+          required
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="flex flex-col gap-2 field">
+        <label for="email">Email</label>
+        <input
+          pInputText
+          id="email"
+          [(ngModel)]="patient.email"
+          placeholder="name@example.com"
+          type="email"
+          required
+        />
+      </div>
+
+      <!-- Mobile Phone -->
+      <div class="flex flex-col gap-2 field">
+        <label for="mobile_phone">Mobile Phone</label>
+        <input
+          pInputText
+          id="mobile_phone"
+          [(ngModel)]="patient.mobile_phone"
+          placeholder="1234567890"
+          maxlength="10"
+          required
+        />
+      </div>
+
+      <!-- Address Line 1 -->
+      <div class="flex flex-col gap-2 field">
+        <label for="address_line_1">Address Line 1</label>
+        <input
+          pInputText
+          id="address_line_1"
+          [(ngModel)]="patient.address_line_1"
+          placeholder="123 Main St"
+          maxlength="40"
+          required
+        />
+      </div>
+
+      <!-- Address Line 2 -->
+      <div class="flex flex-col gap-2 field">
+        <label for="address_line_2">Address Line 2</label>
+        <input
+          pInputText
+          id="address_line_2"
+          [(ngModel)]="patient.address_line_2"
+          placeholder="Apt 4B"
+          maxlength="100"
+        />
+      </div>
+
+      <!-- City -->
+      <div class="flex flex-col gap-2 field">
+        <label for="city">City</label>
+        <p-dropdown
+          id="city"
+          [(ngModel)]="patient.city"
+          [options]="cities"
+          optionLabel="name"
+          placeholder="Select a City"
+          class="w-full"
+        ></p-dropdown>
+      </div>
+
+      <!-- State -->
+      <div class="flex flex-col gap-2 field">
+        <label for="state">State</label>
+        <p-dropdown
+          id="state"
+          [(ngModel)]="patient.state"
+          [options]="states"
+          optionLabel="name"
+          placeholder="Select a State"
+          class="w-full"
+        ></p-dropdown>
+      </div>
+
+      <!-- Country -->
+      <div class="flex flex-col gap-2 field">
+        <label for="country">Country</label>
+        <p-dropdown
+          id="country"
+          [(ngModel)]="patient.country"
+          [options]="countries"
+          optionLabel="name"
+          placeholder="Select a Country"
+          class="w-full"
+        ></p-dropdown>
+      </div>
+
+      <!-- Zipcode -->
+      <div class="flex flex-col gap-2 field">
+        <label for="zipcode">Zipcode</label>
+        <input
+          pInputText
+          id="zipcode"
+          [(ngModel)]="patient.zipcode"
+          placeholder="12345"
+          maxlength="9"
+          required
+        />
+      </div>
+
+      <!-- Date of Birth -->
+      <!-- <div class="flex flex-col gap-2 field">
+        <label for="dob">Date of Birth</label>
+        <p-calendar
+          id="dob"
+          [(ngModel)]="patient.dob"
+          dateFormat="mm/dd/yy"
+          placeholder="Select a Date"
+          class="w-full"
+        ></p-calendar>
+      </div> -->
+      <div class="flex flex-col gap-2 field ">
+          <label>Date of Birth</label>
+          <!-- <input type="date" id="dob" class="form-control" [(ngModel)]="patient.dob" required> -->
+          <p-datepicker type="date" id="dob" class="w-full" [(ngModel)]="patient.dob" required/>
+
+      </div>
+
+     
+
+      <!-- Gender -->
+      <div class="flex flex-col gap-2 field">
+        <label>Gender</label>
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center">
+            <p-radioButton
+              name="gender"
+              value="male"
+              [(ngModel)]="patient.gender"
+              inputId="gender1"
+            ></p-radioButton>
+            <label for="gender1" class="ml-2">Male</label>
+          </div>
+          <div class="flex items-center">
+            <p-radioButton
+              name="gender"
+              value="female"
+              [(ngModel)]="patient.gender"
+              inputId="gender2"
+            ></p-radioButton>
+            <label for="gender2" class="ml-2">Female</label>
+          </div>
+          <div class="flex items-center">
+            <p-radioButton
+              name="gender"
+              value="other"
+              [(ngModel)]="patient.gender"
+              inputId="gender3"
+            ></p-radioButton>
+            <label for="gender3" class="ml-2">Other</label>
           </div>
         </div>
- 
-        <!-- Allow Share -->
-        <div class="flex flex-col gap-2 field">
-          <label>Allow Share</label>
-          <p-checkbox
-            [(ngModel)]="patient.allowShare"
-            binary="true"
-          ></p-checkbox>
-        </div>
- 
-        <!-- Status -->
-        <!-- <div class="flex flex-col gap-2 field">
+      </div>
+
+      <!-- Allow Share -->
+      <div class="flex flex-col gap-2 field">
+        <label>Allow Share</label>
+        <p-checkbox
+          [(ngModel)]="patient.allowShare"
+          binary="true"
+        ></p-checkbox>
+      </div>
+
+      <!-- Status -->
+      <!-- <div class="flex flex-col gap-2 field">
+        <label>Status</label>
+        <p-inputSwitch
+          [(ngModel)]="patient.status"
+        ></p-inputSwitch>
+      </div> -->
+      <div class="flex flex-col gap-2 field">
           <label>Status</label>
           <p-inputSwitch
-            [(ngModel)]="patient.status"
+              [(ngModel)]="patient.status"
+              (onChange)="onStatusChange($event)"
           ></p-inputSwitch>
-        </div> -->
-        <div class="flex flex-col gap-2 field">
-            <label>Status</label>
-            <p-inputSwitch
-                [(ngModel)]="patient.status"
-                (onChange)="onStatusChange($event)"
-            ></p-inputSwitch>
-            <span>{{ patient.status ? 'Active' : 'Inactive' }}</span>
-            </div>
-        <!-- Notes -->
-        <div class="flex flex-col gap-2 field">
-          <label for="notes">Notes</label>
-          <textarea
-            pInputTextarea
-            id="notes"
-            [(ngModel)]="patient.notes"
-            placeholder="Additional information"
-            rows="3"
-          ></textarea>
-        </div>
- 
-        <!-- Submit Button -->
-        <div class="flex flex-col gap-2 field">
-          <p-button label="Submit" (onClick)="onSubmit()"></p-button>
-        </div>
+          <span>{{ patient.status ? 'Active' : 'Inactive' }}</span>
+          </div>
+      <!-- Notes -->
+      <div class="flex flex-col gap-2 field">
+        <label for="notes">Notes</label>
+        <textarea
+          pInputTextarea
+          id="notes"
+          [(ngModel)]="patient.notes"
+          placeholder="Additional information"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex flex-col gap-2 field">
+        <p-button label="Submit" (onClick)="onSubmit()"></p-button>
       </div>
     </div>
   </div>
+</div>
+
+<!-- Add the Toast component -->
+<p-toast></p-toast>

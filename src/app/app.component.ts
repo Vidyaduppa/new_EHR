@@ -28,13 +28,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+
+import {HttpClientModule} from '@angular/common/http';
 import { PatientRegistrationComponent } from './components/patient-registration/patient-registration.component';
 @Component({
   selector: 'app-root',
-  imports: [   PatientRegistrationComponent ,DashboardComponent ,LoginComponent,RegistrationComponent,ReactiveFormsModule,RouterModule,RouterOutlet,ButtonModule, SelectButtonModule, RadioButtonModule, MultiSelect, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule,CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, NgClass, IconFieldModule, InputIconModule, DrawerModule],
+  imports: [  HttpClientModule,PatientRegistrationComponent ,DashboardComponent ,LoginComponent,RegistrationComponent,ReactiveFormsModule,RouterModule,RouterOutlet,ButtonModule, SelectButtonModule, RadioButtonModule, MultiSelect, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule,CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, NgClass, IconFieldModule, InputIconModule, DrawerModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
- 
+ standalone:true
 })
 export class AppComponent implements OnInit {
   title = 'ehr-demo';

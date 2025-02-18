@@ -6,6 +6,7 @@ import Aura from '@primeng/themes/aura';
 import { definePreset } from "@primeng/themes";
 
 import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
 
 const MyPreset = definePreset(Aura, {
   primitive: {
@@ -677,6 +678,6 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: '.dark-theme'
         }
       }
-    })
+    }),provideHttpClient()
   ]
 };

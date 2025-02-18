@@ -26,16 +26,19 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { CommonModule } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { PatientService } from '../../../services/patient.service';
+import { HttpClientModule } from '@angular/common/http';
 @Component({
-  selector: 'app-patient-Registration',
-  templateUrl: './patient-Registration.component.html',
-  styleUrls: ['./patient-Registration.component.scss'],
-  imports: [InputSwitchModule,DropdownModule,RouterLink, RouterModule,ButtonModule, SelectButtonModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
- 
+  selector: 'app-patient-registration',
+  templateUrl: './patient-registration.component.html',
+  styleUrls: ['./patient-registration.component.scss'],
+  imports: [ HttpClientModule,InputSwitchModule, DropdownModule,CommonModule ,InputSwitchModule,DropdownModule,RouterLink, RouterModule,ButtonModule, SelectButtonModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
+ providers:[MessageService,PatientService],
+standalone:true,
 })
 export class PatientRegistrationComponent implements OnInit {
- 
- 
   patient: any = {
     first_name: '',
     last_name: '',
@@ -53,6 +56,8 @@ export class PatientRegistrationComponent implements OnInit {
     allowShare: false,
     status: true,
   };
+submitted: any;
+f: any;
   onStatusChange(event: any) {console.log('Status changed:', this.patient.status ? 'Active' : 'Inactive');}
  
   cities = [
@@ -73,13 +78,64 @@ export class PatientRegistrationComponent implements OnInit {
     { name: 'United Kingdom' },
   ];
  
-  constructor() {}
+  constructor(
+    private patientService: PatientService,
+    private messageService: MessageService
+  ) {}
  
  
   ngOnInit(): void {}
  
   onSubmit(): void {
-    console.log('Form Submitted', this.patient);
-    // Add your form submission logic here (e.g., call an API)
+    const payload = {
+      ...this.patient,
+      city: this.patient.city.name,
+      state: this.patient.state.name,
+      country: this.patient.country.name,
+    };
+ 
+    console.log('Form Submitted', payload);
+    this.patientService.createPatient(payload).subscribe({
+      next: (response) => {
+        console.log('Patient created successfully', response);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Patient created successfully!',
+        });
+        this.resetForm();
+      },
+      error: (error) => {
+        console.error('Error creating patient', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to create patient. Please try again.',
+        });
+      },
+    });
+  }
+ 
+  resetForm(): void {
+    this.patient = {
+      first_name: '',
+      last_name: '',
+      email: '',
+      mobile_phone: '',
+      address_line_1: '',
+      address_line_2: '',
+      city: '',
+      state: '',
+      zipcode: '',
+      country: 'US',
+      notes: '',
+      dob: '',
+      gender: '',
+      allowShare: false,
+      status: true,
+    };
   }
 }
+
+ 
+  

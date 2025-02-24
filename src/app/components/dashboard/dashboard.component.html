@@ -1,107 +1,58 @@
-
 <div class="flex h-screen bg-gray-100">
-
-    <!-- sidebar -->
-    <div class="hidden md:flex flex-col w-64 bg-gray-800">
-        <div class="flex items-center justify-center h-16 bg-gray-100">
-            <img class="w-auto h-8 mr-2" src="images/logo.svg" alt="logo">
+    <!-- Sidebar -->
+    <div [ngClass]="{'hidden md:flex': !menuOpen, 'flex': menuOpen}" 
+         class="flex flex-col w-64 bg-gray-800 fixed md:relative inset-y-0 left-0 z-50">
+        <div class="flex items-center justify-between h-16 bg-gray-100 px-4">
+            <!-- Logo on Left -->
+            <img class="w-auto h-8" src="images/logo.svg" alt="logo">
+            <!-- Mobile Close Button -->
+            <button (click)="toggleMenu()" class="md:hidden text-gray-700 focus:outline-none">
+                <i class="pi pi-times text-xl"></i> <!-- Close (X) icon -->
+            </button>
         </div>
         <div class="flex flex-col flex-1 overflow-y-auto">
             <nav class="flex-1 px-2 py-4 bg-white">
-                
-                    <a class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4" routerLink="/patient">
-                        <i class="pi pi-bars"></i> Create Patients
-                    </a>
-                    <a class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4" routerLink="/view">
-                        <i class="pi pi-comment"></i> View Patients
-                    </a>
-                
-                
-                <a href="#" class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4">
-                    <i class="pi pi-cog"></i>
-                    Settings
+                <a routerLink="/dashboard/home" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4">
+                    <i class="pi pi-bars"></i> Home
                 </a>
+                <a routerLink="/dashboard/patientForm" class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4">
+                    <i class="pi pi-user-plus"></i> Create Patients
+                </a>
+                <a routerLink="/dashboard/viewPatients" class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4">
+                    <i class="pi pi-eye"></i> View Patients
+                </a>
+                <!-- <a routerLink="/register" class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4">
+                    <i class="pi pi-user-plus"></i> New User
+                </a> -->
             </nav>
         </div>
     </div>
 
-    <!-- Main content -->
+    <!-- Main Content -->
     <div class="flex flex-col flex-1 overflow-y-auto">
-        <div class="flex items-center justify-between h-16 bg-white border-b border-gray-200">
-            <div class="flex items-center px-4">
-                <button>
-                    <i class="pi pi-bars"></i>
+        <!-- Header (Fixed) -->
+        <div class="flex items-center justify-between h-16 bg-white border-b border-gray-200 px-4 fixed top-0 left-0 w-full z-50">
+            <div class="flex items-center">
+                <!-- Sidebar Toggle for Mobile -->
+                <button (click)="toggleMenu()" class="md:hidden text-gray-700 focus:outline-none mr-4">
+                    <i class="pi pi-bars text-xl"></i>
                 </button>
-                <!-- <input class="mx-4 w-full border rounded-md px-4 py-2" type="text" placeholder="Search"> -->
+                <!-- Logo (Left Side) -->
+                <img class="w-auto h-8" src="images/logo.svg" alt="logo">
             </div>
+
+            <!-- Avatar & Menu (Right Side) -->
             <div class="flex items-center pr-4">
-                <p-menu #menu [model]="items" [popup]="true" />
-                <p-avatar (click)="menu.toggle($event)" label="P" styleClass="mr-2" size="normal" shape="circle" />
+                <p-menu #menu [model]="items" [popup]="true"></p-menu>
+                <p-avatar (click)="menu.toggle($event)" [label]="userEmailInitial" 
+                          styleClass="mr-2" size="normal" shape="circle">
+                </p-avatar>
             </div>
         </div>
-        <div class="p-base flex-1 overflow-auto">
-            <div class="flex justify-between mb-base">
-                <!-- <h5>Table Heading main</h5> -->
-                <div class="flex items-center gap-sm">
-                    <!-- <p-drawer [(visible)]="visible" header="Drawer">
-                        <p>
-                            
-                        </p>
-                    </p-drawer> -->
-                    <!-- <p-button (click)="visible = true" icon="pi pi-arrow-right" /> -->
-                </div>
-            </div>
 
-
-
-            
-
-            <div class="mb-base">            
-            <div class="card">
-
-                <p-table class="mt-base" [value]="products" [tableStyle]="{ 'min-width': '50rem' }" >
-                                    <ng-template #caption>
-                    <div class="flex items-center">
-                        <!-- <h5>Table Heading 1</h5> -->
-                        <div class="flex items-center gap-sm ml-auto">
-
-                            <p-columnFilter type="text" field="country.name" placeholder="Filter by state or status"
-                                ariaLabel="Filter Country"></p-columnFilter>
-
-                            <p-iconfield iconPosition="left" class="">
-                                <input pInputText type="text" placeholder="Search by FirstName or LastName" />
-                                <p-inputicon>
-                                    <i class="pi pi-search"></i>
-                                </p-inputicon>
-        
-                            </p-iconfield>
-                        </div>
-        
-                    </div>
-                </ng-template>
-                    <ng-template #header>
-                        <tr>
-                            <th>FirstName</th>
-                            <th>LastName</th>
-                            <th>State</th>
-                            <th>status</th>
-                            <th>action</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template #body let-product>
-                        <tr>
-                            <td>{{ product.code }}</td>
-                            <td>{{ product.name }}</td>
-                            <td>{{ product.category }}</td>
-                            <td>{{ product.quantity }}</td>
-                            <td>
-                                <div class="flex gap-base">
-                               <div class="cursor-pointer"> <i class="pi true-icon pi-pencil text-blue-700"></i></div>
-                               <div class="cursor-pointer"><i class="pi true-icon pi-trash text-red-500"></i></div>
-                            </div>
-                            </td>
-
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </div>
+        <!-- Ensure Content Doesn't Overlap with Fixed Header -->
+        <div class="mt-16 p-4">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

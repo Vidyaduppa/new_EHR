@@ -23,85 +23,54 @@ import { ListboxModule } from 'primeng/listbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DrawerModule } from 'primeng/drawer';
 import { RouterOutlet } from '@angular/router';
-import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { MenuItem } from 'primeng/api';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { PatientRegistrationComponent } from '../patient-registration/patient-registration.component';
+import { AuthService } from '../../../services/auth.service';
+
 @Component({
   selector: 'app-dashboard',
-   imports: [   PatientRegistrationComponent ,DashboardComponent,ReactiveFormsModule,RouterModule,RouterOutlet,ButtonModule, SelectButtonModule, RadioButtonModule, MultiSelect, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule,CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, NgClass, IconFieldModule, InputIconModule, DrawerModule],
- 
+  imports: [ NgClass,PatientRegistrationComponent,RouterLink, RouterModule, ButtonModule, SelectButtonModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, IconFieldModule, InputIconModule, DrawerModule],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  standalone: true,
+  styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
-  title = 'ehr-demo';
-  items = [
-    {
-      label: 'Options',
-      items: [
-        {
-          label: 'Refresh',
-          icon: 'pi pi-refresh'
-        },
-        {
-          label: 'Export',
-          icon: 'pi pi-upload'
-        }
-      ]
-    }
-  ];
-  products = [
-    {
-      code: "f230fh0g3",
-      name: "Bamboo Watch",
-      category: "Accessories",
-      quantity: 10
-    },
-    {
-      code: "nvklal433",
-      name: "Black Watch",
-      category: "Accessories",
-      quantity: 61
-    },
-    {
-      code: "zz21cz3c1",
-      name: "Blue Band",
-      category: "Fitness",
-      quantity: 1
-    },
-    {
-      code: "244wgerg2",
-      name: "Blue T-Shirt",
-      category: "Clothing",
-      quantity: 25
-    },
-    {
-      code: "h456wer53",
-      name: "Bracelet",
-      category: "Accessories",
-      quantity: 73
-    },
-  ]
-  customers = [
-    {
-      name: "customers",
-      country: "US",
-      representative: "TEST",
-      status: true
-    }
-  ];
-  representatives = [{ label: "edvak", name: "edvak" }];
-  value = "";
-  ingredient: any = '';
-  visible = false
-  constructor(private primeng: PrimeNG) { }
-
+export class DashboardComponent implements OnInit {
+  items: MenuItem[] = []; // Menu items for the dropdown
+  userEmail: string = ''; // Logged-in user's email
+  userEmailInitial: string = ''; // Initial for the avatar
+  menuOpen: boolean = false; // State for sidebar toggle
+  constructor(private authService: AuthService, private router: Router) {}
+ 
   ngOnInit(): void {
-    this.primeng.ripple.set(true);
+    // Fetch the logged-in user's email (example)
+    this.userEmail = this.authService.getUserEmail(); // Replace with your logic
+    this.userEmailInitial = this.userEmail.charAt(0).toUpperCase(); // Get the first letter for the avatar
+ 
+    // Define menu items
+    this.items = [
+      {
+        label: this.userEmail, // Display the user's email
+        icon: 'pi pi-user',
+        disabled: true, // Disable clicking on the email
+      },
+      {
+        separator: true, // Add a separator
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: () => this.logout(), // Call the logout method
+      },
+    ];
   }
-
-  toggleDarkMode() {
-    const element = document.querySelector('html');
-    element && element.classList.toggle('dark-theme');
+   // Toggle sidebar visibility
+   toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+  // Logout method
+  logout(): void {
+    this.authService.logout(); // Call your logout service
+    this.router.navigate(['/login']); // Redirect to the login page
   }
 }

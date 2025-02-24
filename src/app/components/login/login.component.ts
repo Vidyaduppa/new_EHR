@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { PrimeNG } from 'primeng/config';
 import { AvatarModule } from 'primeng/avatar';
@@ -22,31 +22,65 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { ListboxModule } from 'primeng/listbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DrawerModule } from 'primeng/drawer';
-import { RouterOutlet } from '@angular/router';
-import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from '../../../services/auth.service';
+import { MessageService } from 'primeng/api';
+import { DashboardComponent } from '../dashboard/dashboard.component';
+
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule,RouterModule,RouterOutlet,ButtonModule, SelectButtonModule, RadioButtonModule, MultiSelect, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule,CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, NgClass, IconFieldModule, InputIconModule, DrawerModule],
-
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [ DashboardComponent,RouterLink,RouterModule,ButtonModule, SelectButtonModule, HttpClientModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
+  providers: [MessageService],
 })
 export class LoginComponent {
+  
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private messageService: MessageService
+  ) {}
 
-  constructor(private router: Router) {}
+  onLogin() {
+    // Convert email to lowercase for case-insensitive login
+    const caseInsensitiveEmail = this.email.toLowerCase();
 
-  onSubmit() {
-    // Add your login logic here
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
-    console.log('Remember Me:', this.rememberMe);
-    
-    // On successful login, navigate to the dashboard or desired route
-    this.router.navigate(['/dashboard']);
+    this.authService.login(caseInsensitiveEmail, this.password).subscribe({
+      next: (response: any) => {
+        console.log('Login successful - Full response:', response);
+
+        // Ensure token exists in response
+        if (response && response.token) {
+          localStorage.setItem('authToken', response.token);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Login successful, redirecting to main page...',
+          });
+
+          setTimeout(() => {
+            this.router.navigate(['/dashboard/home']);
+          }, 2000);
+        } else {
+          console.error('Token not found in response:', response);
+          alert('Token not found in response. Please check the backend API.');
+        }
+      },
+      error: (error: any) => {
+        console.error('Login failed:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Login failed. Please check your credentials.',
+        });
+      },
+    });
   }
 }

@@ -1,121 +1,152 @@
 <section class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <!-- Logo -->
-      <a href="#" class="flex items-center mb-6">
-        <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
-      </a>
+  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <a href="#" class="flex items-center mb-6">
+      <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
+    </a>
  
-      <!-- Registration Card -->
-      <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <!-- Heading -->
-          <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-            Create an account
-          </h1>
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+          Create an account
+        </h1>
  
-          <!-- Registration Form -->
-          <form class="space-y-4 md:space-y-6" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-            <!-- First Name -->
-            <div>
-              <label for="firstname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstname"
-                formControlName="first_name"
-                pInputText
-                class="w-full"
-                placeholder="John"
-                required
-              />
-            </div>
- 
-            <!-- Last Name -->
-            <div>
-              <label for="lastname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastname"
-                formControlName="last_name"
-                pInputText
-                class="w-full"
-                placeholder="Doe"
-                required
-              />
-            </div>
- 
-            <!-- Email -->
-            <div>
-              <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Your email
-              </label>
-              <input
-                type="email"
-                id="email"
-                formControlName="email"
-                pInputText
-                class="w-full"
-                placeholder="name@company.com"
-                required
-              />
-            </div>
- 
-            <!-- Password -->
-            <div>
-              <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                formControlName="password"
-                pInputText
-                class="w-full"
-                placeholder="••••••••"
-                required
-              />
-            </div>
- 
-            <!-- Terms and Conditions -->
-            <div class="flex items-start">
-              <div class="flex items-center h-5">
-                <input
-                  id="terms"
-                  aria-describedby="terms"
-                  type="checkbox"
-                  class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                  required
-                />
-              </div>
-              <div class="ml-3 text-sm">
-                <label for="terms" class="font-light text-gray-500 dark:text-gray-300">
-                  I accept the <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">
-                    Terms and Conditions
-                  </a>
-                </label>
-              </div>
-            </div>
- 
-            <!-- Submit Button -->
-            <button
-              type="submit"
-              pButton
-              label="Create an account"
+        <form class="space-y-4 md:space-y-6" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+         
+          <!-- First Name -->
+          <div>
+            <label for="firstname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              First Name <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="firstname"
+              formControlName="first_name"
+              pInputText
               class="w-full"
-            ></button>
+
+            />
+            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['first_name'].invalid && registrationForm.controls['first_name'].touched">
+              <span *ngIf="registrationForm.controls['first_name'].errors?.['required']">First name is required.</span>
+              <span *ngIf="registrationForm.controls['first_name'].errors?.['pattern']">Only alphabets are allowed.</span>
+              <span *ngIf="registrationForm.controls['first_name'].errors?.['maxlength']">Max 35 characters allowed.</span>
+            </div>
+          </div>
  
-            <!-- Login Link -->
-            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-              Already have an account?
-              <a routerLink="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
-                Login here
-              </a>
-            </p>
-          </form>
+          <!-- Last Name -->
+          <div>
+            <label for="lastname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Last Name<span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="lastname"
+              formControlName="last_name"
+              pInputText
+              class="w-full"
+            />
+            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['last_name'].invalid && registrationForm.controls['last_name'].touched">
+              <span *ngIf="registrationForm.controls['last_name'].errors?.['required']">Last name is required.</span>
+              <span *ngIf="registrationForm.controls['last_name'].errors?.['pattern']">Only alphabets are allowed.</span>
+              <span *ngIf="registrationForm.controls['last_name'].errors?.['maxlength']">Max 35 characters allowed.</span>
+            </div>
+          </div>
+ 
+          <!-- Email -->
+          <div>
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Your email <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              pInputText
+              class="w-full"
+            />
+            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['email'].invalid && registrationForm.controls['email'].touched">
+              <span *ngIf="registrationForm.controls['email'].errors?.['required']">Email is required.</span>
+              <span *ngIf="registrationForm.controls['email'].errors?.['email']">Enter a valid email.</span>
+            </div>
+          </div>
+ 
+          <!-- Password -->
+          <div>
+            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Password <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              id="password"
+              formControlName="password"
+              pInputText
+              class="w-full"
+            />
+            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['password'].invalid && registrationForm.controls['password'].touched">
+              <span *ngIf="registrationForm.controls['password'].errors?.['required']">Password is required.</span>
+              <span *ngIf="registrationForm.controls['password'].errors?.['minlength']">Password must be at least 8 characters.</span>
+              <span *ngIf="registrationForm.controls['password'].errors?.['pattern']">Must contain 1 uppercase, 1 number, 1 special character.</span>
+            </div>
+          </div>
+         <!-- Confirm Password -->
+         <div>
+          <label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Confirm Password <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="password"
+            id="confirm_password"
+            formControlName="confirm_password"
+            pInputText
+            class="w-full"
+            required
+          />
+          <p class="text-red-500 text-xs italic" *ngIf="registrationForm.hasError('passwordMismatch') && registrationForm.get('confirm_password')?.touched">
+            Passwords do not match.
+          </p>
+
         </div>
+          <!-- Terms and Conditions -->
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input
+                id="terms"
+                type="checkbox"
+                formControlName="terms"
+                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+              />
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="terms" class="font-light text-gray-500 dark:text-gray-300">
+                I accept the <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">
+                  Terms and Conditions
+                </a>
+              </label>
+            </div>
+          </div>
+          <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['terms'].invalid && registrationForm.controls['terms'].touched">
+            You must accept the terms and conditions.
+          </div>
+ 
+        <!-- Submit Button -->
+<button
+type="submit"
+pButton
+label="Create an account"
+class="w-full"[disabled]="registrationForm.invalid"
+></button>
+
+ 
+          <!-- Login Link -->
+          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+            Already have an account?
+            <a routerLink="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
+              Login here
+            </a>
+          </p>
+        </form>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+<!-- Add the Toast component -->
+<p-toast></p-toast>

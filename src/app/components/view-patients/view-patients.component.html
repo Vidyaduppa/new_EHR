@@ -6,9 +6,7 @@
       [rows]="10"  
       [rowsPerPageOptions]="[10, 25, 50]" 
       [paginator]="true"
-      [totalRecords]="totalRecords" 
-      [loading]="false"
-      (onPage)="onPageChange($event)"  
+      [loading]="false" 
       [globalFilterFields]="['first_name', 'last_name', 'state', 'status']"
       [tableStyle]="{ 'min-width': '75rem' }"
     >
@@ -79,19 +77,25 @@
             ></p-tag>
           </td>
           <td>
+            
             <div class="flex gap-base">
               <!-- Edit Button -->
-              <div class="cursor-pointer">
-                <i class="pi pi-pencil text-blue-700" (click)="editPatient(patient)"></i>
+              <div class="cursor-pointer" (click)="onEditPatient(patient._id)">
+                <i class="pi pi-pencil text-blue-700"></i>
               </div>
               <!-- Delete Button -->
-              <div class="cursor-pointer">
-                <i class="pi pi-trash text-red-500" (click)="deletePatient(patient._id)"></i>
+              <div class="cursor-pointer" (click)="confirmDelete(patient)">
+                <i class="pi pi-trash text-red-500"></i>
               </div>
+ <!-- Undo Button (Visible for 5 Seconds) -->
+ <div class="cursor-pointer" (click)="undoDelete(patient._id)">
+  <i class="p-button p-button-sm p-button-text text-green-600"></i>
+</div>
+
             </div>
           </td>
         </tr>
       </ng-template>
     </p-table>
   </div>
-  
+  <p-confirmDialog></p-confirmDialog>

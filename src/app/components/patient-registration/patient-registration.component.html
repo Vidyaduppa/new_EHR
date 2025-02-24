@@ -1,233 +1,190 @@
-<div class="grid grid-rows-1 grid-flow-col gap-4">
-  <div class="card w-[50rem] mx-auto">
-    <h5 class="mb-base">Patient Registration Form</h5>
-    <div>
+<div class="flex justify-center items-center w-full">
+  <div class="card w-full max-w-3xl mx-auto p-4">
+    <h5 class="mb-2 text-center">{{ isEditMode ? 'Edit Patient' : 'Register Patient' }}</h5>
+   
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
       <!-- First Name -->
-      <div class="flex flex-col gap-2 field">
-        <label for="firstname">First Name</label>
+      <div class="flex flex-col field max-w-sm">
+        <label for="firstname" class="text-sm">First Name <span class="text-red-500">*</span></label>
         <input
-          pInputText
+          pInputText class="w-full p-2 text-sm"
           id="firstname"
           [(ngModel)]="patient.first_name"
+          required pattern="^[A-Za-z][A-Za-z\s]*$" maxlength="35"
           placeholder="John"
-          maxlength="35"
+          #firstName="ngModel"
+          name="first_name"
           required
         />
-      </div>
+        <small class="text-red-500" *ngIf="firstName.invalid && firstName.touched">Required, Max length 35, Should start with alphabets only  </small>
 
+      </div>
+ 
       <!-- Last Name -->
-      <div class="flex flex-col gap-2 field">
-        <label for="lastname">Last Name</label>
+      <div class="flex flex-col field max-w-sm">
+        <label for="lastname" class="text-sm">Last Name <span class="text-red-500">*</span></label>
         <input
-          pInputText
+          pInputText class="w-full p-2 text-sm"
           id="lastname"
           [(ngModel)]="patient.last_name"
+          required pattern="^[A-Za-z][A-Za-z\s]*$" maxlength="35"
           placeholder="Doe"
-          maxlength="35"
+          #lastName="ngModel"
           required
+          name="last_name"
         />
-      </div>
+        <small class="text-red-500" *ngIf="lastName.invalid && lastName.touched">   Required, Max length 35, Should start with alphabets only  
+        </small>
 
+      </div>
+ 
       <!-- Email -->
-      <div class="flex flex-col gap-2 field">
-        <label for="email">Email</label>
+      <div class="flex flex-col field max-w-sm">
+        <label for="email" class="text-sm">Email <span class="text-red-500"> *</span></label>
         <input
-          pInputText
+          pInputText class="w-full p-2 text-sm"
           id="email"
           [(ngModel)]="patient.email"
           placeholder="name@example.com"
-          type="email"
+           type="email"
+          #email="ngModel"
+          name="email"
           required
         />
-      </div>
+        <small class="text-red-500" *ngIf="email.invalid && email.touched">Required, Must follow standard email validation </small>
 
+      </div>
+ 
       <!-- Mobile Phone -->
-      <div class="flex flex-col gap-2 field">
-        <label for="mobile_phone">Mobile Phone</label>
+      <div class="flex flex-col field max-w-sm">
+        <label for="mobile_phone" class="text-sm">Mobile Phone  <span class="text-red-500">*</span></label>
         <input
-          pInputText
+          pInputText class="w-full p-2 text-sm"
           id="mobile_phone"
           [(ngModel)]="patient.mobile_phone"
+          required pattern="^[0-9]{10}$"
           placeholder="1234567890"
           maxlength="10"
-          required
+          #mobilePhone="ngModel"
+          name="mobile_phone"
+            required
         />
-      </div>
+        <small class="text-red-500" *ngIf="mobilePhone.invalid && mobilePhone.touched">Required, Max length 10 (ignore country code)  </small>
 
-      <!-- Address Line 1 -->
-      <div class="flex flex-col gap-2 field">
-        <label for="address_line_1">Address Line 1</label>
+      </div>
+ 
+      <!-- Address -->
+      <div class="flex flex-col field max-w-md">
+        <label for="address_line_1" class="text-sm">Address Line 1<span class="text-red-500">*</span></label>
         <input
-          pInputText
+          pInputText class="w-full p-2 text-sm"
           id="address_line_1"
           [(ngModel)]="patient.address_line_1"
+          required maxlength="40"
           placeholder="123 Main St"
-          maxlength="40"
+          #address1="ngModel"
+          name="address_line_1"
           required
         />
-      </div>
+        <small class="text-red-500" *ngIf="address1.invalid && address1.touched">Required, Max length 40  </small>
 
-      <!-- Address Line 2 -->
-      <div class="flex flex-col gap-2 field">
-        <label for="address_line_2">Address Line 2</label>
+      </div>
+ 
+      <div class="flex flex-col field max-w-md">
+        <label for="address_line_2" class="text-sm">Address Line 2</label>
         <input
-          pInputText
+          pInputText class="w-full p-2 text-sm"
           id="address_line_2"
           [(ngModel)]="patient.address_line_2"
-          placeholder="Apt 4B"
           maxlength="100"
+          placeholder="Apt 4B"
         />
       </div>
-
-      <!-- City -->
-      <div class="flex flex-col gap-2 field">
-        <label for="city">City</label>
-        <p-dropdown
-          id="city"
-          [(ngModel)]="patient.city"
-          [options]="cities"
-          optionLabel="name"
-          placeholder="Select a City"
-          class="w-full"
-        ></p-dropdown>
+ 
+      <!-- City and State -->
+      <div class="flex flex-col field max-w-sm">
+        <label for="city" class="text-sm">City<span class="text-red-500">*</span></label>
+        <p-select id="city" [(ngModel)]="patient.city" [options]="cities" optionLabel="name" placeholder="Select a City" class="w-full text-sm"></p-select>
       </div>
-
-      <!-- State -->
-      <div class="flex flex-col gap-2 field">
-        <label for="state">State</label>
-        <p-dropdown
-          id="state"
-          [(ngModel)]="patient.state"
-          [options]="states"
-          optionLabel="name"
-          placeholder="Select a State"
-          class="w-full"
-        ></p-dropdown>
+ 
+      <div class="flex flex-col field max-w-sm">
+        <label for="state" class="text-sm">State<span class="text-red-500">*</span></label>
+        <p-select id="state" [(ngModel)]="patient.state" [options]="states" optionLabel="name" placeholder="Select a State" class="w-full text-sm"></p-select>
       </div>
-
-      <!-- Country -->
-      <div class="flex flex-col gap-2 field">
-        <label for="country">Country</label>
-        <p-dropdown
-          id="country"
-          [(ngModel)]="patient.country"
-          [options]="countries"
-          optionLabel="name"
-          placeholder="Select a Country"
-          class="w-full"
-        ></p-dropdown>
+ 
+      <!-- Country and Zipcode -->
+      <div class="flex flex-col field max-w-sm">
+        <label for="country" class="text-sm">Country<span class="text-red-500">*</span></label>
+        <p-select id="country" [(ngModel)]="patient.country" [options]="countries" optionLabel="name" placeholder="Select a Country" class="w-full text-sm"></p-select>
       </div>
-
-      <!-- Zipcode -->
-      <div class="flex flex-col gap-2 field">
-        <label for="zipcode">Zipcode</label>
+ 
+      <div class="flex flex-col field max-w-sm">
+        <label for="zipcode" class="text-sm">Zipcode<span class="text-red-500">*</span></label>
         <input
-          pInputText
+          pInputText class="w-full p-2 text-sm"
           id="zipcode"
           [(ngModel)]="patient.zipcode"
+          required pattern="^\d{5}(\d{4})?$"
           placeholder="12345"
           maxlength="9"
-          required
+          #zipcode="ngModel"
         />
-      </div>
+        <small class="text-red-500" *ngIf="zipcode.invalid && zipcode.touched">Required, Must be either 5 or 9 digits </small>
 
+      </div>
+ 
       <!-- Date of Birth -->
-      <!-- <div class="flex flex-col gap-2 field">
-        <label for="dob">Date of Birth</label>
-        <p-calendar
-          id="dob"
-          [(ngModel)]="patient.dob"
-          dateFormat="mm/dd/yy"
-          placeholder="Select a Date"
-          class="w-full"
-        ></p-calendar>
-      </div> -->
-      <div class="flex flex-col gap-2 field ">
-          <label>Date of Birth</label>
-          <!-- <input type="date" id="dob" class="form-control" [(ngModel)]="patient.dob" required> -->
-          <p-datepicker type="date" id="dob" class="w-full" [(ngModel)]="patient.dob" required/>
-
+      <div class="flex flex-col field max-w-sm">
+        <label for="dob" class="text-sm">Date of Birth<span class="text-red-500">*</span></label>
+        <p-datepicker type="date" id="dob" class="w-full text-sm" [(ngModel)]="patient.dob" required></p-datepicker>
       </div>
-
-     
-
+ 
       <!-- Gender -->
-      <div class="flex flex-col gap-2 field">
-        <label>Gender</label>
+      <div class="flex flex-col field max-w-sm">
+        <label class="text-sm">Gender<span class="text-red-500">*</span></label>
         <div class="flex flex-wrap gap-4">
           <div class="flex items-center">
-            <p-radioButton
-              name="gender"
-              value="male"
-              [(ngModel)]="patient.gender"
-              inputId="gender1"
-            ></p-radioButton>
-            <label for="gender1" class="ml-2">Male</label>
+            <p-radioButton name="gender" value="male" [(ngModel)]="patient.gender" inputId="gender1"></p-radioButton>
+            <label for="gender1" class="ml-1 text-sm">Male</label>
           </div>
           <div class="flex items-center">
-            <p-radioButton
-              name="gender"
-              value="female"
-              [(ngModel)]="patient.gender"
-              inputId="gender2"
-            ></p-radioButton>
-            <label for="gender2" class="ml-2">Female</label>
+            <p-radioButton name="gender" value="female" [(ngModel)]="patient.gender" inputId="gender2"></p-radioButton>
+            <label for="gender2" class="ml-1 text-sm">Female</label>
           </div>
           <div class="flex items-center">
-            <p-radioButton
-              name="gender"
-              value="other"
-              [(ngModel)]="patient.gender"
-              inputId="gender3"
-            ></p-radioButton>
-            <label for="gender3" class="ml-2">Other</label>
+            <p-radioButton name="gender" value="other" [(ngModel)]="patient.gender" inputId="gender3"></p-radioButton>
+            <label for="gender3" class="ml-1 text-sm">Other</label>
           </div>
         </div>
       </div>
-
-      <!-- Allow Share -->
-      <div class="flex flex-col gap-2 field">
-        <label>Allow Share</label>
-        <p-checkbox
-          [(ngModel)]="patient.allowShare"
-          binary="true"
-        ></p-checkbox>
+     
+ 
+      <!-- Allow Share and Status -->
+      <div class="flex flex-col field max-w-sm">
+        <label class="text-sm">Allow Share</label>
+        <p-checkbox [(ngModel)]="patient.allowShare" binary="true"></p-checkbox>
       </div>
-
-      <!-- Status -->
-      <!-- <div class="flex flex-col gap-2 field">
-        <label>Status</label>
-        <p-inputSwitch
-          [(ngModel)]="patient.status"
-        ></p-inputSwitch>
-      </div> -->
-      <div class="flex flex-col gap-2 field">
-          <label>Status</label>
-          <p-inputSwitch
-              [(ngModel)]="patient.status"
-              (onChange)="onStatusChange($event)"
-          ></p-inputSwitch>
-          <span>{{ patient.status ? 'Active' : 'Inactive' }}</span>
-          </div>
+ 
+      <div class="flex flex-col field max-w-sm">
+        <label class="text-sm">Status</label>
+        <p-inputSwitch [(ngModel)]="patient.status"></p-inputSwitch>
+        <span class="text-sm">{{ patient.status ? 'Active' : 'Inactive' }}</span>
+      </div>
+ 
       <!-- Notes -->
-      <div class="flex flex-col gap-2 field">
-        <label for="notes">Notes</label>
-        <textarea
-          pInputTextarea
-          id="notes"
-          [(ngModel)]="patient.notes"
-          placeholder="Additional information"
-          rows="3"
-        ></textarea>
+      <div class="flex flex-col field max-w-3xl md:col-span-2">
+        <label for="notes" class="text-sm">Notes</label>
+        <textarea pInputTextarea class="w-full p-2 text-sm" id="notes" [(ngModel)]="patient.notes" placeholder="Additional information" rows="2"></textarea>
       </div>
-
+     
       <!-- Submit Button -->
-      <div class="flex flex-col gap-2 field">
-        <p-button label="Submit" (onClick)="onSubmit()"></p-button>
+      <div class="flex field col-span-2 max-w-sm gap-4">
+        <p-button (onClick)="onSubmit()" [label]="isEditMode ? 'Update' : 'Register'" class="text-sm"></p-button>
+        <p-button *ngIf="isEditMode" (onClick)="cancelEdit()" label="Cancel" class="p-button-secondary text-sm"></p-button>
       </div>
     </div>
   </div>
 </div>
-
+ 
 <!-- Add the Toast component -->
 <p-toast></p-toast>

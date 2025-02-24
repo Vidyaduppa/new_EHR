@@ -17,4 +17,11 @@ router.delete('/patients/:id', patientController.deletePatient);
 // Route to get a single patient by ID
 router.get('/patients/:id', patientController.getPatientById);
 
+//Soft delete a patient
+router.put('/patients/:id/soft-delete', patientController.softDeletePatient);
+ 
+//Restore a soft-deleted patient
+router.put('patients/:id/restore',patientController.restorePatient);
+
+
 module.exports = router;

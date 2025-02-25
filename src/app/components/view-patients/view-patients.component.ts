@@ -57,7 +57,7 @@ export class ViewPatientsComponent {
     //   this.patients = response.data.patients;
  // });
     this.patientService.getPatients().subscribe((response)=>{
-      this.patients = response.data.patients.filter(patient => !patient.deleted);
+      this.patients = response.data.patients.filter(patient => patient.status !== 2); 
     });
    
    
@@ -78,24 +78,46 @@ export class ViewPatientsComponent {
         table.filter(this.selectedStatus, 'status', 'equals');
       }
      
+      // confirmDelete(patient: any) {
+      //   this.confirmationService.confirm({
+      //     message: 'Are you sure you want to delete this patient?',
+      //     header: 'Confirm',
+      //     icon: 'pi pi-exclamation-triangle',
+      //     accept: () => {
+      //       this.patientService.softDeletePatient(patient._id).subscribe(() => {
+      //         this.patients = this.patients.filter(p => p._id !== patient._id);
+      //         this.deletedPatients.push(patient);
+      //         this.loadPatients();
+      //         // Set timeout to permanently remove patient after 5 seconds
+      //         setTimeout(() => {
+      //           this.deletedPatients = this.deletedPatients.filter(p => p._id !== patient._id);
+      //         }, 5000);
+      //       });
+      //     }
+      //   });
+      // }
       confirmDelete(patient: any) {
         this.confirmationService.confirm({
           message: 'Are you sure you want to delete this patient?',
           header: 'Confirm',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
-            this.patientService.softDeletePatient(patient._id).subscribe(() => {
-              this.patients = this.patients.filter(p => p._id !== patient._id);
-              this.deletedPatients.push(patient);
-      
-              // Set timeout to permanently remove patient after 5 seconds
-              setTimeout(() => {
-                this.deletedPatients = this.deletedPatients.filter(p => p._id !== patient._id);
-              }, 5000);
-            });
+            this.patientService.softDeletePatient(patient._id).subscribe(
+              (response) => {
+                if (response.success) {
+                  this.patients = this.patients.filter(p => p._id !== patient._id);
+                  this.deletedPatients.push(patient);
+                  this.loadPatients(); // 🔹 Ensure data refreshes after deletion
+                }
+              },
+              (error) => {
+                console.error("Error deleting patient:", error);
+              }
+            );
           }
         });
       }
+      
       
       undoDelete(patientId: string) {
         this.patientService.restorePatient(patientId).subscribe(() => {

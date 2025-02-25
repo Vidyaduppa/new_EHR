@@ -1,154 +1,129 @@
+// const mongoose = require("mongoose");
+// const bcrypt = require("bcryptjs");
+
+// const userSchema = new mongoose.Schema({
+//   first_name: {
+//     type: String,
+//     required: true,
+//     maxlength: 35,
+//     match: /^[A-Za-z\s'-]+$/, // Allow spaces, hyphens, and apostrophes
+//   },
+//   last_name: {
+//     type: String,
+//     required: true,
+//     maxlength: 35,
+//     match: /^[A-Za-z\s'-]+$/, // Allow spaces, hyphens, and apostrophes
+//   },
+//   email: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//     match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Email validation
+//   },
+//   password: {
+//     type: String,
+//     required: true,
+//     minlength: 8,
+//     validate: {
+//       validator: function (v) {
+//         return /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/.test(v); // Password validation for at least one uppercase letter, one number, and one special character
+//       },
+//       message: "Password must contain at least one uppercase letter, one number, and one special character.",
+//     },
+//   },
+//   createdDate: { 
+//     type: Date, 
+//     default: Date.now 
+//   },
+//   updatedDate: { 
+//     type: Date, 
+//     default: Date.now 
+//   },
+// });
+
+// // Hash password before saving
+// userSchema.pre("save", async function (next) {
+//   if (this.isModified("password")) {
+//     this.password = await bcrypt.hash(this.password, 10);
+//   }
+  
+//   // Auto-update 'updatedDate' when a document is modified
+//   if (this.isModified() && !this.isNew) {
+//     this.updatedDate = Date.now();
+//   }
+
+//   next();
+// });
+
+// module.exports = mongoose.model("User", userSchema);
 const { MongoClient, ObjectId } = require("mongodb");
-
-const uri = process.env.MONGO_URI; // Ensure this is set in your environment variables
-const client = new MongoClient(uri);
-
-const dbName = "test"; // Replace with your actual database name
-const collectionName = "users";
-
+const bcrypt = require("bcryptjs");
 async function connectDB() {
-  await client.connect();
-  return client.db(dbName).collection(collectionName);
+  if (!client.topology || !client.topology.isConnected()) {
+    await client.connect();
+  }
+  return client.db(dbName);
 }
 
-// Validation function
-function validateUserData(user) {
-  const errors = [];
+// Function to create a new user
+async function createUser(user) {
+  const db = await connectDB();
+  const collection = db.collection("users");
 
-  if (!user.first_name || user.first_name.length > 35) {
-    errors.push("Invalid first name");
+  // Validate user fields
+  if (!user.first_name || !user.last_name || !user.email || !user.password) {
+    throw new Error("All fields are required");
   }
-  if (!user.last_name || user.last_name.length > 35) {
-    errors.push("Invalid last name");
+  if (!/^[A-Za-z\s'-]+$/.test(user.first_name) || !/^[A-Za-z\s'-]+$/.test(user.last_name)) {
+    throw new Error("Invalid name format");
   }
-  if (!user.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
-    errors.push("Invalid email format");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+    throw new Error("Invalid email format");
   }
-  if (!user.password || user.password.length < 8) {
-    errors.push("Password must be at least 8 characters long");
+  if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/.test(user.password)) {
+    throw new Error("Password must contain at least one uppercase letter, one number, and one special character.");
   }
 
-  return errors.length > 0 ? errors : null;
+  // Check if user already exists
+  const existingUser = await collection.findOne({ email: user.email });
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
+
+  // Hash the password before storing
+  user.password = await bcrypt.hash(user.password, 10);
+  user.createdDate = new Date();
+  user.updatedDate = new Date();
+
+  const result = await collection.insertOne(user);
+  return result;
 }
 
-// Create a new user
-async function createUser(userData) {
-  const collection = await connectDB();
-  const errors = validateUserData(userData);
+// Function to update a user (modifies 'updatedDate' automatically)
+async function updateUser(userId, updates) {
+  const db = await connectDB();
+  const collection = db.collection("users");
 
-  if (errors) {
-    return { success: false, errors };
+  if (updates.password) {
+    updates.password = await bcrypt.hash(updates.password, 10);
   }
 
-  userData.createdDate = new Date();
-  userData.updatedDate = new Date();
+  updates.updatedDate = new Date(); // Auto-update 'updatedDate'
 
-  try {
-    const result = await collection.insertOne(userData);
-    return { success: true, userId: result.insertedId };
-  } catch (error) {
-    if (error.code === 11000) {
-      return { success: false, message: "Email already exists" };
-    }
-    throw error;
-  }
-}
-
-// Get all users with pagination
-async function getUsers(query = {}, page = 1, limit = 10) {
-  const collection = await connectDB();
-  const skip = (page - 1) * limit;
-
-  const users = await collection.find(query).skip(skip).limit(limit).toArray();
-  const total = await collection.countDocuments(query);
-
-  return { success: true, data: users, total };
-}
-
-// Get a user by ID
-async function getUserById(userId) {
-  const collection = await connectDB();
-
-  const user = await collection.findOne({ _id: new ObjectId(userId) });
-  return user ? { success: true, data: user } : { success: false, message: "User not found" };
-}
-
-// Update a user
-async function updateUser(userId, updateData) {
-  const collection = await connectDB();
-  
-  updateData.updatedDate = new Date();
   const result = await collection.updateOne(
     { _id: new ObjectId(userId) },
-    { $set: updateData }
+    { $set: updates }
   );
 
-  return result.matchedCount > 0
-    ? { success: true, message: "User updated successfully" }
-    : { success: false, message: "User not found" };
+  return result;
 }
 
-// Delete a user
-async function deleteUser(userId) {
-  const collection = await connectDB();
+// Function to find a user by email
+async function findUserByEmail(email) {
+  const db = await connectDB();
+  const collection = db.collection("users");
 
-  const result = await collection.deleteOne({ _id: new ObjectId(userId) });
-  return result.deletedCount > 0
-    ? { success: true, message: "User deleted successfully" }
-    : { success: false, message: "User not found" };
+  return await collection.findOne({ email });
 }
 
-// Set a password reset token
-async function setPasswordResetToken(userId, token, expiration) {
-  const collection = await connectDB();
-  
-  const result = await collection.updateOne(
-    { _id: new ObjectId(userId) },
-    { $set: { resetToken: token, resetTokenExpiration: expiration, updatedDate: new Date() } }
-  );
-
-  return result.matchedCount > 0
-    ? { success: true, message: "Reset token set successfully" }
-    : { success: false, message: "User not found" };
-}
-
-// Verify a password reset token
-async function verifyResetToken(email, token) {
-  const collection = await connectDB();
-  const currentTimestamp = Date.now();
-
-  const user = await collection.findOne({
-    email,
-    resetToken: token,
-    resetTokenExpiration: { $gt: currentTimestamp },
-  });
-
-  return user
-    ? { success: true, message: "Valid reset token" }
-    : { success: false, message: "Invalid or expired reset token" };
-}
-
-// Clear the reset token after password reset
-async function clearResetToken(userId) {
-  const collection = await connectDB();
-  
-  const result = await collection.updateOne(
-    { _id: new ObjectId(userId) },
-    { $unset: { resetToken: "", resetTokenExpiration: "" }, $set: { updatedDate: new Date() } }
-  );
-
-  return result.matchedCount > 0
-    ? { success: true, message: "Reset token cleared successfully" }
-    : { success: false, message: "User not found" };
-}
-
-module.exports = {
-  createUser,
-  getUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
-  setPasswordResetToken,
-  verifyResetToken,
-  clearResetToken,
-};
+module.exports = { createUser, updateUser, findUserByEmail };

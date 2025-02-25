@@ -25,10 +25,12 @@ exports.register = async (req, res) => {
       last_name,
       email,
       password: hashedPassword,
+      createdDate: new Date(), // Add created timestamp
+      updatedDate: new Date(), // Add updated timestamp
     };
 
     await db.collection("users").insertOne(newUser);
-    res.status(201).json({ success: true, message: "Registration successful" });
+    res.status(200).json({ success: true, message: "Registration successful" });
 
   } catch (error) {
     console.error("❌ Registration Error:", error);

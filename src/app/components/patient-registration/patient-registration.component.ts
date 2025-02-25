@@ -85,6 +85,13 @@ throw new Error('Method not implemented.');
     { name: 'United Kingdom' },
   ];
  
+  providers = [
+    { id: 1, name: 'Provider 1' },
+    { id: 2, name: 'Provider 2' },
+    { id: 3, name: 'Provider 3' }
+  ];
+  
+ 
   constructor(
     private patientService: PatientService,
     private messageService: MessageService,
@@ -132,6 +139,7 @@ throw new Error('Method not implemented.');
       city: this.patient.city.name,
       state: this.patient.state.name,
       country: this.patient.country.name,
+      status:this.patient.status?1:0
     };
    
     if (this.isEditMode && this.patientId) {

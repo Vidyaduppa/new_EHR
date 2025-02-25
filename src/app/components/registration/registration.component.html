@@ -1,17 +1,25 @@
 <section class="bg-gray-50 dark:bg-gray-900">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <!-- Logo -->
     <a href="#" class="flex items-center mb-6">
       <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
     </a>
  
+    <!-- Registration Card -->
     <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <!-- Heading -->
         <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
           Create an account
         </h1>
  
+        <!-- Backend Error Message -->
+        <div *ngIf="backendErrorMessage" class="text-red-500 text-sm italic">
+          {{ backendErrorMessage }}
+        </div>
+ 
+        <!-- Registration Form -->
         <form class="space-y-4 md:space-y-6" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-         
           <!-- First Name -->
           <div>
             <label for="firstname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -21,34 +29,35 @@
               type="text"
               id="firstname"
               formControlName="first_name"
-              pInputText
-              class="w-full"
-
+              class="w-full p-2 border rounded-lg"
+              required
             />
-            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['first_name'].invalid && registrationForm.controls['first_name'].touched">
-              <span *ngIf="registrationForm.controls['first_name'].errors?.['required']">First name is required.</span>
-              <span *ngIf="registrationForm.controls['first_name'].errors?.['pattern']">Only alphabets are allowed.</span>
-              <span *ngIf="registrationForm.controls['first_name'].errors?.['maxlength']">Max 35 characters allowed.</span>
-            </div>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('first_name')?.errors?.['required'] && registrationForm.get('first_name')?.touched">
+              First Name is required.
+            </p>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('first_name')?.errors?.['alphabet'] && registrationForm.get('first_name')?.touched">
+              Only alphabets are allowed.
+            </p>
           </div>
  
           <!-- Last Name -->
           <div>
             <label for="lastname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Last Name<span class="text-red-500">*</span>
+              Last Name <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="lastname"
               formControlName="last_name"
-              pInputText
-              class="w-full"
+              class="w-full p-2 border rounded-lg"
+              required
             />
-            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['last_name'].invalid && registrationForm.controls['last_name'].touched">
-              <span *ngIf="registrationForm.controls['last_name'].errors?.['required']">Last name is required.</span>
-              <span *ngIf="registrationForm.controls['last_name'].errors?.['pattern']">Only alphabets are allowed.</span>
-              <span *ngIf="registrationForm.controls['last_name'].errors?.['maxlength']">Max 35 characters allowed.</span>
-            </div>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('last_name')?.errors?.['required'] && registrationForm.get('last_name')?.touched">
+              Last Name is required.
+            </p>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('last_name')?.errors?.['alphabet'] && registrationForm.get('last_name')?.touched">
+              Only alphabets are allowed.
+            </p>
           </div>
  
           <!-- Email -->
@@ -60,13 +69,15 @@
               type="email"
               id="email"
               formControlName="email"
-              pInputText
-              class="w-full"
+              class="w-full p-2 border rounded-lg"
+              required
             />
-            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['email'].invalid && registrationForm.controls['email'].touched">
-              <span *ngIf="registrationForm.controls['email'].errors?.['required']">Email is required.</span>
-              <span *ngIf="registrationForm.controls['email'].errors?.['email']">Enter a valid email.</span>
-            </div>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('email')?.errors?.['required'] && registrationForm.get('email')?.touched">
+              Email is required.
+            </p>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('email')?.errors?.['email'] && registrationForm.get('email')?.touched">
+              Please enter a valid email address.
+            </p>
           </div>
  
           <!-- Password -->
@@ -78,63 +89,72 @@
               type="password"
               id="password"
               formControlName="password"
-              pInputText
-              class="w-full"
+              class="w-full p-2 border rounded-lg"
+              required
             />
-            <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['password'].invalid && registrationForm.controls['password'].touched">
-              <span *ngIf="registrationForm.controls['password'].errors?.['required']">Password is required.</span>
-              <span *ngIf="registrationForm.controls['password'].errors?.['minlength']">Password must be at least 8 characters.</span>
-              <span *ngIf="registrationForm.controls['password'].errors?.['pattern']">Must contain 1 uppercase, 1 number, 1 special character.</span>
-            </div>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('password')?.errors?.['required'] && registrationForm.get('password')?.touched">
+              Password is required.
+            </p>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('password')?.errors?.['minlength'] && registrationForm.get('password')?.touched">
+              Password must be at least 6 characters long.
+            </p>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('password')?.errors?.['maxlength'] && registrationForm.get('password')?.touched">
+              Password cannot exceed 8 characters.
+            </p>
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('password')?.errors?.['passwordStrength'] && registrationForm.get('password')?.touched">
+              Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+            </p>
           </div>
-         <!-- Confirm Password -->
-         <div>
-          <label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Confirm Password <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="password"
-            id="confirm_password"
-            formControlName="confirm_password"
-            pInputText
-            class="w-full"
-            required
-          />
-          <p class="text-red-500 text-xs italic" *ngIf="registrationForm.hasError('passwordMismatch') && registrationForm.get('confirm_password')?.touched">
-            Passwords do not match.
-          </p>
-
-        </div>
+ 
+          <!-- Confirm Password -->
+          <div>
+            <label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Confirm Password <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              id="confirm_password"
+              formControlName="confirm_password"
+              class="w-full p-2 border rounded-lg"
+              required
+            />
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.hasError('passwordMismatch') && registrationForm.get('confirm_password')?.touched">
+              Passwords do not match.
+            </p>
+          </div>
+ 
           <!-- Terms and Conditions -->
           <div class="flex items-start">
             <div class="flex items-center h-5">
               <input
                 id="terms"
+                aria-describedby="terms"
                 type="checkbox"
-                formControlName="terms"
                 class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                formControlName="terms"
+                required
               />
             </div>
             <div class="ml-3 text-sm">
               <label for="terms" class="font-light text-gray-500 dark:text-gray-300">
                 I accept the <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">
                   Terms and Conditions
-                </a>
+                </a> <span class="text-red-500">*</span>
               </label>
             </div>
-          </div>
-          <div class="text-red-500 text-xs mt-1" *ngIf="registrationForm.controls['terms'].invalid && registrationForm.controls['terms'].touched">
-            You must accept the terms and conditions.
+            <p class="text-red-500 text-xs italic" *ngIf="registrationForm.get('terms')?.errors?.['required'] && registrationForm.get('terms')?.touched">
+              You must accept the terms and conditions.
+            </p>
           </div>
  
-        <!-- Submit Button -->
-<button
-type="submit"
-pButton
-label="Create an account"
-class="w-full"[disabled]="registrationForm.invalid"
-></button>
-
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full bg-primary-600 text-white p-2 rounded-lg hover:bg-primary-700"
+            [disabled]="registrationForm.invalid"
+          >
+            Create an account
+          </button>
  
           <!-- Login Link -->
           <p class="text-sm font-light text-gray-500 dark:text-gray-400">
@@ -148,5 +168,5 @@ class="w-full"[disabled]="registrationForm.invalid"
     </div>
   </div>
 </section>
-<!-- Add the Toast component -->
+<!-- Toast Component -->
 <p-toast></p-toast>

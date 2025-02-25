@@ -4,6 +4,27 @@ const jwt = require("jsonwebtoken");
 const { sendResetEmail } = require("../utils/emailService");
 const { ObjectId } = require("mongodb");
 
+// Controller to fetch all users
+exports.getUsers = async (req, res) => {
+  try {
+    const db = getDB();
+    const users = await db.collection("users").find({}).toArray();
+
+    // Map users to include only the fields needed (id, first_name, last_name)
+    const userList = users.map((user) => ({
+      first_name: user.first_name,
+      last_name: user.last_name,
+      id: user._id.toString(),  // Assuming MongoDB's ObjectId type
+    }));
+
+    res.status(200).json({ success: true, data: userList });
+
+  } catch (error) {
+    console.error("❌ Error fetching users:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 exports.register = async (req, res) => {
   try {
     const { first_name, last_name, email, password } = req.body;

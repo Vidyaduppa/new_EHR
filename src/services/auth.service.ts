@@ -59,14 +59,6 @@ export class AuthService {
     console.error('Error occurred:', error);
     return throwError(() => new Error(error.error?.message || 'Something went wrong'));
   }
-
-  // forgotPassword(email: string) {
-  //   return this.http.post('/api/auth/forgot-password', { email });
-  // }
-
-  // resetPassword(token: string, newPassword: string) {
-  //   return this.http.post('/api/auth/reset-password', { token, newPassword });
-  // }
   forgotPassword(email: string) {
     return this.http.post(`${this.apiUrl}/forgot-password`, { email });
   }
@@ -74,5 +66,12 @@ export class AuthService {
   resetPassword(token: string, newPassword: string) {
     return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
   }
-  
+  getUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users`);
+  }
+   // Store the selected provider in the database
+   storeSelectedProvider(providerId: string): Observable<any> {
+    // Assuming you are storing the selected provider for a specific patient
+    return this.http.post(`${this.apiUrl}/store-provider`, { providerId });
+  }
 }

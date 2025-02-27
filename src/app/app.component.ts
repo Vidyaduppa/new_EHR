@@ -33,12 +33,14 @@ import {HttpClientModule} from '@angular/common/http';
 import { PatientRegistrationComponent } from './components/patient-registration/patient-registration.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { AuthGuard } from './guards/auth.guard'; 
 @Component({
   selector: 'app-root',
   imports: [ResetPasswordComponent,ForgotPasswordComponent ,HomeComponent , HttpClientModule,PatientRegistrationComponent ,DashboardComponent ,LoginComponent,RegistrationComponent,ReactiveFormsModule,RouterModule,RouterOutlet,ButtonModule, SelectButtonModule, RadioButtonModule, MultiSelect, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule,CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, NgClass, IconFieldModule, InputIconModule, DrawerModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
- standalone:true
+ standalone:true,
+ providers: [AuthGuard],  // ✅ Register AuthGuard
 })
 export class AppComponent implements OnInit {
   title = 'ehr-demo';

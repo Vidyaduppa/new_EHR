@@ -40,8 +40,9 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('authToken');
+    return !!localStorage.getItem('authToken'); // Ensure token is stored
   }
+  
 
   getAuthToken(): string | null {
     return localStorage.getItem('authToken');

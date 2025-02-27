@@ -8,7 +8,7 @@ import { HomeComponent } from './components/home/home.component';
 import { Component } from '@angular/core';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-
+import { AuthGuard } from './guards/auth.guard'; // Import the Auth Guard
  
 export const routes: Routes = [
     {path :'',component: LoginComponent},
@@ -22,31 +22,17 @@ export const routes: Routes = [
       path: 'reset-password/:token', 
       component: ResetPasswordComponent 
     },
- 
- 
-   // {path :'dashboard',component: DashboardComponent},
     {
-        path: 'dashboard',
-        component:DashboardComponent, // this is the component with the <router-outlet> in the template
-        children: [
-          {path: "home", component:HomeComponent},
-          {
-            path: 'viewPatients', // child route path
-            component: ViewPatientsComponent, // child route component that the router renders
-          },
-          {
-            path: 'patientForm',
-            component: PatientRegistrationComponent, // another child route component that the router renders
-          },
-          {path: 'edit-patient/:id', component:PatientRegistrationComponent},
-          {path:'',
-            redirectTo: 'viewPatients',
-            pathMatch:'full'
-          }
-        ],
-      },
-  /*  {path:'viewPatients',component :ViewPatientsComponent},
-    {path :'patientForm',component:PatientFormComponent},*/
-    // {path: 'edit-patient/:id', component:EditPatientComponent}
+      path: 'dashboard',
+      component: DashboardComponent,
+      canActivate: [AuthGuard], // Protect Dashboard
+      children: [
+          { path: 'home', component: HomeComponent },
+          { path: 'viewPatients', component: ViewPatientsComponent },
+          { path: 'patientForm', component: PatientRegistrationComponent },
+          { path: 'edit-patient/:id', component: PatientRegistrationComponent, },
+          { path: '', redirectTo: 'viewPatients', pathMatch: 'full' }
+      ]
+  }
 ];
  

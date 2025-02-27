@@ -58,6 +58,7 @@
           <th>Mobile Number</th>
           <th>State</th>
           <th>Status</th>
+          <th>Assigned Providers</th>
           <th>Actions</th>
         </tr>
       </ng-template>
@@ -76,8 +77,22 @@
               [severity]="patient.status ? 'success' : 'danger'"
             ></p-tag>
           </td>
+          
           <td>
-            
+            <ng-container *ngIf="patient?.selectedProviders?.length > 0; else noProviders">
+              <ng-container *ngFor="let provider of patient.selectedProviders; let last = last">
+                <span *ngIf="provider?.full_name" pTooltip="{{ provider.full_name }}" tooltipPosition="top">
+                  {{ provider.full_name.charAt(0) }}
+                </span>
+                <span *ngIf="!last">, </span> <!-- Adds a comma between provider names -->
+              </ng-container>
+            </ng-container>
+            <ng-template #noProviders>
+              <span>No Providers</span>
+            </ng-template>
+          </td>
+          
+   <td>        
             <div class="flex gap-base">
               <!-- Edit Button -->
               <div class="cursor-pointer" (click)="onEditPatient(patient._id)">

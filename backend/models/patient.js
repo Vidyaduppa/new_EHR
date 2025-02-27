@@ -43,6 +43,12 @@ const patientSchema = {
    status: { type: Number, enum: [0, 1, 2], required: true, default: 1 }, 
   createdDate: { type: Date, default: new Date() },
   updatedDate: { type: Date, default: new Date() },
+  selectedProviders: [{
+    provider_id: String,
+    first_name: String,
+    last_name: String,
+  }],
+  
 };
 
 // Function to validate DOB before inserting

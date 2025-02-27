@@ -113,23 +113,66 @@ exports.getPatients = async (req, res) => {
 };
 
 
+// exports.updatePatient = async (req, res) => {
+//   try {
+//     const db = getDB();
+//     const { id } = req.params;
+//     const updateData = req.body;
+    
+//     const result = await db.collection("patients").findOneAndUpdate(
+//       { _id: new ObjectId(id) },
+//       { $set: updateData },
+//       { returnDocument: "after" }
+//     );
+
+//     res.status(200).json({ success: true, data: result.value, error: null });
+//   } catch (err) {
+//     res.status(500).json({ success: false, error: { message: "Server error." } });
+//   }
+// };
+
 exports.updatePatient = async (req, res) => {
   try {
     const db = getDB();
     const { id } = req.params;
-    const updateData = req.body;
-    
+    let updateData = req.body;
+
+    // Validate MongoDB ObjectId
+    if (!ObjectId.isValid(id)) {
+      console.error("❌ Invalid ObjectId:", id);
+      return res.status(400).json({ success: false, error: "Invalid patient ID" });
+    }
+
+    // 🚀 Remove `_id` if it's in the request body
+    if (updateData._id) {
+      delete updateData._id;
+    }
+
+    console.log("🔄 Updating patient:", id);
+    console.log("📝 Update Data:", updateData);
+
     const result = await db.collection("patients").findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: updateData },
       { returnDocument: "after" }
     );
 
-    res.status(200).json({ success: true, data: result.value, error: null });
+    if (!result.value) {
+      console.error("⚠️ Patient not found:", id);
+      return res.status(404).json({ success: false, error: "Patient not found" });
+    }
+
+    console.log("✅ Update Success:", result.value);
+    res.status(200).json({ success: true, data: result.value });
+
   } catch (err) {
-    res.status(500).json({ success: false, error: { message: "Server error." } });
+    console.error("🔥 Error updating patient:", err);
+    res.status(500).json({ success: false, error: err.message || "Server error." });
   }
 };
+
+
+
 
 exports.deletePatient = async (req, res) => {
   try {
@@ -154,13 +197,27 @@ exports.getPatientById = async (req, res) => {
   try {
     const db = getDB();
     const { id } = req.params;
+
+    // 🛑 Validate MongoDB ObjectId format
+    if (!ObjectId.isValid(id)) {
+      console.error("❌ Invalid ObjectId:", id);
+      return res.status(400).json({ success: false, error: { message: "Invalid patient ID format" } });
+    }
+
+    console.log("🔍 Searching for patient with ID:", id);
+
     const patient = await db.collection("patients").findOne({ _id: new ObjectId(id) });
-    
+
     if (!patient) {
+      console.warn("⚠️ Patient not found:", id);
       return res.status(404).json({ success: false, error: { message: "Patient not found" } });
     }
+
+    console.log("✅ Patient found:", patient);
     res.status(200).json({ success: true, data: patient, error: null });
+
   } catch (err) {
+    console.error("🔥 Error fetching patient:", err);
     res.status(500).json({ success: false, error: { message: "Server error." } });
   }
 };
@@ -186,20 +243,115 @@ exports.restorePatient = async (req, res) => {
 };
 
 
+// // Function to update a patient with assigned providers
+// const updatePatientWithProviders = async (id, assignedProviders) => {
+//   const db = getDB();
+
+//   // Fetch the patient from the database
+//   const patient = await db.collection("patients").findOne({ _id: new ObjectId(id) });
+
+//   if (!patient) {
+//     throw new Error('Patient not found');
+//   }
+
+//   // Update the patient with the new list of assigned providers
+//   const updateResult = await db.collection("patients").findOneAndUpdate(
+//     { _id: new ObjectId(id) },
+//     { 
+//       $push: { selectedProviders: { $each: assignedProviders } }  // Push selected providers
+//     },
+//     { returnDocument: "after" }
+//   );
+
+//   return updateResult.value;  // Return the updated patient
+// };
+
+// // Controller function to handle the route logic
+// exports.assignProviders = async (req, res) => {
+//   const assignedProviders = req.body.assignedProviders;  // Get the assigned providers from request body
+//   const patientId = req.body.patientId;  // Get the patient ID
+
+//   if (!assignedProviders || assignedProviders.length === 0) {
+//     return res.status(400).json({ message: 'No providers selected' });
+//   }
+
+//   try {
+//     const updatedPatient = await updatePatientWithProviders(patientId, assignedProviders);
+//     res.status(200).json({ message: 'Providers assigned successfully', patient: updatedPatient });
+//   } catch (error) {
+//     console.error('Error assigning providers:', error);
+//     res.status(500).json({ message: 'Error assigning providers' });
+//   }
+// };
 
 
-exports.registerPatient = async (req, res) => {
-  try {
-    const db = getDB();
-    console.log("Received patient data:", req.body);
-    const result = await db.collection("patients").insertOne(req.body);
-    res.status(200).json({ message: "Patient registered successfully!", patient: result.ops[0] });
-  } catch (error) {
-    res.status(500).json({ message: "Error registering patient" });
-  }
-};
 
+// exports.registerPatient = async (req, res) => {
+//   try {
+//     const db = getDB();
+//     console.log("Received patient data:", req.body);
+//     const result = await db.collection("patients").insertOne(req.body);
+//     res.status(200).json({ message: "Patient registered successfully!", patient: result.ops[0] });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error registering patient" });
+//   }
+// };
 
+// exports.assignProviders = async (req, res) => {
+//   const assignedProviders = req.body.assignedProviders;  // Get the assigned providers from request body
+//   const patientId = req.body.patientId;  // Get the patient ID
+
+//   console.log('Assigned Providers:', assignedProviders);
+//   console.log('Patient ID:', patientId);
+
+//   if (!assignedProviders || assignedProviders.length === 0) {
+//     return res.status(400).json({ message: 'No providers selected' });
+//   }
+
+//   try {
+//     const updatedPatient = await updatePatientWithProviders(patientId, assignedProviders);
+//     res.status(200).json({ message: 'Providers assigned successfully', patient: updatedPatient });
+//   } catch (error) {
+//     console.error('Error assigning providers:', error);
+//     res.status(500).json({ message: 'Error assigning providers' });
+//   }
+// };
+
+// exports.assignProviders = async (req, res) => {
+//   const assignedProviders = req.body.assignedProviders;  // Get the assigned providers from request body
+//   const patientId = req.body.patientId;  // Get the patient ID
+
+//   console.log('Assigned Providers:', assignedProviders);
+//   console.log('Patient ID:', patientId);
+
+//   if (!assignedProviders || assignedProviders.length === 0) {
+//     return res.status(400).json({ message: 'No providers selected' });
+//   }
+
+//   try {
+//     // Fetch the patient from the database
+//     const patient = await db.collection("patients").findOne({ _id: new ObjectId(patientId) });
+
+//     if (!patient) {
+//       throw new Error('Patient not found');
+//     }
+
+//     // Push the provider details into the patient's selectedProviders array
+//     const updateResult = await db.collection("patients").findOneAndUpdate(
+//       { _id: new ObjectId(patientId) },
+//       { 
+//         $push: { selectedProviders: { $each: assignedProviders } }  // Push selected providers
+//       },
+//       { returnDocument: "after" }
+//     );
+
+//     // Return the updated patient with the assigned providers
+//     res.status(200).json({ message: 'Providers assigned successfully', patient: updateResult.value });
+//   } catch (error) {
+//     console.error('Error assigning providers:', error);
+//     res.status(500).json({ message: 'Error assigning providers' });
+//   }
+// };
 
 
 exports.softDeletePatient = async (req, res) => {
@@ -240,5 +392,42 @@ exports.softDeletePatient = async (req, res) => {
       message: "Error soft-deleting patient",
       error
     });
+  }
+};
+
+
+exports.assignProviders = async (req, res) => {
+  const assignedProviders = req.body.assignedProviders;  // Get the assigned providers from request body
+  const patientId = req.body.patientId;  // Get the patient ID
+
+  console.log('Assigned Providers:', assignedProviders);
+  console.log('Patient ID:', patientId);
+
+  if (!assignedProviders || assignedProviders.length === 0) {
+    return res.status(400).json({ message: 'No providers selected' });
+  }
+
+  try {
+    // Fetch the patient from the database
+    const patient = await db.collection("patients").findOne({ _id: new ObjectId(patientId) });
+
+    if (!patient) {
+      throw new Error('Patient not found');
+    }
+
+    // Push the provider details into the patient's selectedProviders array
+    const updateResult = await db.collection("patients").findOneAndUpdate(
+      { _id: new ObjectId(patientId) },
+      { 
+        $push: { selectedProviders: { $each: assignedProviders } }  // Push selected providers (including first_name and last_name)
+      },
+      { returnDocument: "after" }
+    );
+
+    // Return the updated patient with the assigned providers
+    res.status(200).json({ message: 'Providers assigned successfully', patient: updateResult.value });
+  } catch (error) {
+    console.error('Error assigning providers:', error);
+    res.status(500).json({ message: 'Error assigning providers' });
   }
 };

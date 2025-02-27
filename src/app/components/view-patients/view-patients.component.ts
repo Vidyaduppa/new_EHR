@@ -29,9 +29,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PatientRegistrationComponent } from '../patient-registration/patient-registration.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { HttpClientModule } from '@angular/common/http';
+import { TooltipModule } from 'primeng/tooltip';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-view-patients',
-  imports: [ HttpClientModule,ConfirmDialogModule,RouterModule,DropdownModule,ButtonModule, SelectButtonModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
+  imports: [ CommonModule,TooltipModule, HttpClientModule,ConfirmDialogModule,RouterModule,DropdownModule,ButtonModule, SelectButtonModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
   templateUrl: './view-patients.component.html',
   standalone: true,
   styleUrl: './view-patients.component.scss',

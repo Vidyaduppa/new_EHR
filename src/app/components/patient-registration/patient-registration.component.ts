@@ -207,7 +207,7 @@ import { AuthService } from '../../../services/auth.service';
 
 export class PatientRegistrationComponent implements OnInit {
 users: any[] = [];  // To hold the list of users (providers)
-selectedProvider: any;  // To hold the selected provider from the dropdown
+selectedProviders: string[] = [];  // Make sure this is declared and initialized
 
 @Output() patientAdded = new EventEmitter<any>();
 patientForm!: FormGroup;
@@ -336,7 +336,8 @@ onSubmit(): void {
     city: this.patient.city.name,
     state: this.patient.state.name,
     country: this.patient.country.name,
-    status: this.patient.status ? 1 : 0
+    status: this.patient.status ? 1 : 0,
+    selectedProviders: this.patient.selectedProviders  // Add selected providers
   };
 
   if (this.isEditMode && this.patientId) {
@@ -405,23 +406,49 @@ cancelEdit(): void {
   this.router.navigate(['/dashboard/viewPatients']);
 }
 
+
   onProviderSelect(event: any): void {
     console.log('Provider selected:', event.value);
-
-    // Send the selected provider's ID to the backend
-    this.authService.storeSelectedProvider(event.value).subscribe(
-      (response) => {
-        console.log('Provider stored successfully:', response);
-        // Optionally, show a success message or do something else
-      },
-      (error) => {
-        console.error('Error storing provider:', error);
-        // Optionally, show an error message to the user
+    console.log('Selected provider IDs:', this.selectedProviders);
+  
+    // Ensure selectedProviders is not empty and contains valid data
+    if (this.selectedProviders && this.selectedProviders.length > 0) {
+      const selectedProvidersDetails = this.selectedProviders.map((providerId: string) => {
+        const provider = this.users.find(user => user.value === providerId);
+        
+      //   if (provider) {
+      //     // Extract names from `label` (if not available directly)
+      //     const [first_name, last_name] = provider.label.split(" ");
+      //     return {
+      //       provider_id: provider.value,
+      //       first_name,
+      //       last_name
+      //     };
+      //   }
+      //   return null;  
+      // }).filter(Boolean); 
+      // console.log('Mapped selected providers:', selectedProvidersDetails);
+      if (provider) {
+        // Store full name instead of splitting
+        const full_name = provider.label; 
+      
+        return {
+          provider_id: provider.value,
+          full_name // Save as a single field
+        };
       }
-    );
+      return null;
+      }).filter(Boolean);
+      
+      console.log('Mapped selected providers:', selectedProvidersDetails);
+      
+      // Assign selected provider details to patient object
+      this.patient.selectedProviders = selectedProvidersDetails;
+    } else {
+      this.patient.selectedProviders = [];  // Ensure it’s empty if no providers are selected
+    }
   }
-  }
-
-
+  
+}  
 
  

@@ -24,4 +24,6 @@ router.put('/patients/:id/soft-delete', patientController.softDeletePatient);
 router.put('patients/:id/restore',patientController.restorePatient);
 
 
+// Define the route for assigning providers
+router.post('/assignProviders', patientController.assignProviders);
 module.exports = router;

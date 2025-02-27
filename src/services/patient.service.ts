@@ -53,4 +53,12 @@ export class PatientService {
   restorePatient(patientId : string):Observable<any>{
     return this.http.put(`${this.apiUrl}/${patientId}/restore`,{});
   }
+
+  storeSelectedProviders(selectedProviders: any[]): Observable<any> {
+    const body = {
+      assignedProviders: selectedProviders
+    };
+    
+    return this.http.post('/assignProviders', body);  // Modify the endpoint as needed
+  }
 }

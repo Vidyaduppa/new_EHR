@@ -16,7 +16,7 @@ export class PatientService {
 
     getPatients(
       page: number = 1,
-      limit: number = 25,
+      limit: number = 100,
       search: string = "",
       state: string = "",
       status: string = ""

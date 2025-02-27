@@ -208,8 +208,6 @@ import { AuthService } from '../../../services/auth.service';
 export class PatientRegistrationComponent implements OnInit {
 users: any[] = [];  // To hold the list of users (providers)
 selectedProviders: string[] = [];  // Make sure this is declared and initialized
-
-@Output() patientAdded = new EventEmitter<any>();
 patientForm!: FormGroup;
 submitted = false;
 
@@ -229,6 +227,7 @@ patient: any = {
   gender: '',
   allowShare: false,
   status: true,
+  
 };
 
 isEditMode = false;
@@ -301,7 +300,9 @@ initializeForm(): void {
     dob: [this.patient.dob, Validators.required],
     gender: [this.patient.gender, Validators.required],
     allowShare: [this.patient.allowShare],
-    status: [this.patient.status]
+    status: [this.patient.status],
+    selectedProviders: [this.patient.selectedProviders || []],  // Bind selected providers
+
   });
 }
 
@@ -316,7 +317,9 @@ loadPatientDetails(patientId: string): void {
           state: { name: response.data.state },
           country: { name: response.data.country },
           dob: new Date(response.data.dob),
-          updatedDate: new Date().toUTCString()
+          updatedDate: new Date().toUTCString(),
+          selectedProviders: response.data.selectedProviders || [],  // Ensure this is correctly fetched
+          status: response.data.status === 1 ? true : false,  // Handle status correctly, assuming 1 is 'true' and 0 is 'false'
         };
         this.initializeForm();  // Re-initialize form with updated patient data
       } else {
@@ -396,8 +399,8 @@ onSubmit(): void {
     city: this.patient.city.name,
     state: this.patient.state.name,
     country: this.patient.country.name,
-    status: this.patient.status ? 1 : 0,
-    selectedProviders: this.patient.selectedProviders  // Add selected providers
+    selectedProviders: this.patient.selectedProviders,
+    status: this.patient.status ? 1 : 0,  // Add selected providers
   };
 
   if (this.isEditMode && this.patientId) {
@@ -464,7 +467,8 @@ resetForm(): void {
   this.patientForm.reset({
     country: 'US',
     allowShare: false,
-    status: true
+    status: true, 
+    selectedProviders: []  // Reset the selected providers
   });
 }
 
@@ -487,19 +491,7 @@ cancelEdit(): void {
     if (this.selectedProviders && this.selectedProviders.length > 0) {
       const selectedProvidersDetails = this.selectedProviders.map((providerId: string) => {
         const provider = this.users.find(user => user.value === providerId);
-        
-      //   if (provider) {
-      //     // Extract names from `label` (if not available directly)
-      //     const [first_name, last_name] = provider.label.split(" ");
-      //     return {
-      //       provider_id: provider.value,
-      //       first_name,
-      //       last_name
-      //     };
-      //   }
-      //   return null;  
-      // }).filter(Boolean); 
-      // console.log('Mapped selected providers:', selectedProvidersDetails);
+    
       if (provider) {
         // Store full name instead of splitting
         const full_name = provider.label; 

@@ -172,7 +172,7 @@ export class ViewPatientsComponent implements OnInit, OnDestroy {
   }
 
   loadPatients(): void {
-    this.patientService.getPatients(1, 5, this.searchQuery).subscribe((response) => {
+    this.patientService.getPatients(1, 100000, this.searchQuery).subscribe((response) => {
       this.patients = response.data.patients.filter(patient => patient.status !== 2); 
     });
   }

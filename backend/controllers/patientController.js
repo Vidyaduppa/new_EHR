@@ -117,17 +117,95 @@ exports.getPatients = async (req, res) => {
 //   try {
 //     const db = getDB();
 //     const { id } = req.params;
-//     const updateData = req.body;
-    
+//     let updateData = req.body;
+
+//     // Validate MongoDB ObjectId
+//     if (!ObjectId.isValid(id)) {
+//       console.error("❌ Invalid ObjectId:", id);
+//       return res.status(400).json({ success: false, error: "Invalid patient ID" });
+//     }
+
+//     // 🚀 Remove `_id` if it's in the request body
+//     if (updateData._id) {
+//       delete updateData._id;
+//     }
+
+//     console.log("🔄 Updating patient:", id);
+//     console.log("📝 Update Data:", updateData);
+
 //     const result = await db.collection("patients").findOneAndUpdate(
 //       { _id: new ObjectId(id) },
 //       { $set: updateData },
 //       { returnDocument: "after" }
 //     );
 
-//     res.status(200).json({ success: true, data: result.value, error: null });
+//     if (!result.value) {
+//       console.error("⚠️ Patient not found:", id);
+//       return res.status(404).json({ success: false, error: "Patient not found" });
+//     }
+
+//     console.log("✅ Update Success:", result.value);
+//     res.status(200).json({ success: true, data: result.value });
+
 //   } catch (err) {
-//     res.status(500).json({ success: false, error: { message: "Server error." } });
+//     console.error("🔥 Error updating patient:", err);
+//     res.status(500).json({ success: false, error: err.message || "Server error." });
+//   }
+// };
+
+// exports.updatePatient = async (req, res) => {
+//   try {
+//     const db = getDB();
+//     const { id } = req.params;
+//     let updateData = req.body;
+
+//     // Validate MongoDB ObjectId
+//     if (!ObjectId.isValid(id)) {
+//       console.error("❌ Invalid ObjectId:", id);
+//       return res.status(400).json({ success: false, error: "Invalid patient ID" });
+//     }
+
+//     // 🚀 Remove _id if it's in the request body
+//     if (updateData._id) {
+//       delete updateData._id;
+//     }
+
+//     console.log("🔄 Updating patient:", id);
+//     console.log("📝 Update Data:", updateData);
+
+//     // Check if patient exists before updating
+//     const existingPatient = await db.collection("patients").findOne({ _id: new ObjectId(id) });
+    
+//     if (!existingPatient) {
+//       console.error("⚠️ Patient not found:", id);
+//       return res.status(404).json({ success: false, error: "Patient not found" });
+//     }
+
+//     console.log("✅ Patient found:", existingPatient);
+
+//     // Log the full update query to debug
+//     console.log("📝 Running update query for ID:", id);
+//     console.log("🔄 Update Data:", updateData);
+
+//     // Proceed with update
+//     const result = await db.collection("patients").findOneAndUpdate(
+//       { _id: new ObjectId(id) },
+//       { $set: updateData },
+//       { returnDocument: "after" }
+//     );
+
+//     // Check if the update was successful and if the document was actually modified
+//     if (result.ok === 1 && result.value) {
+//       console.log("✅ Update Success:", result.value);
+//       return res.status(200).json({ success: true, data: result.value });
+//     } else {
+//       console.error("⚠️ Patient update failed or no changes were made:", id);
+//       return res.status(400).json({ success: false, error: "Patient update failed or no changes were made" });
+//     }
+
+//   } catch (err) {
+//     console.error("🔥 Error updating patient:", err);
+//     return res.status(500).json({ success: false, error: err.message || "Server error." });
 //   }
 // };
 
@@ -143,7 +221,7 @@ exports.updatePatient = async (req, res) => {
       return res.status(400).json({ success: false, error: "Invalid patient ID" });
     }
 
-    // 🚀 Remove `_id` if it's in the request body
+    // 🚀 Remove _id if it's in the request body
     if (updateData._id) {
       delete updateData._id;
     }
@@ -151,27 +229,48 @@ exports.updatePatient = async (req, res) => {
     console.log("🔄 Updating patient:", id);
     console.log("📝 Update Data:", updateData);
 
+    // Check if patient exists before updating
+    const existingPatient = await db.collection("patients").findOne({ _id: new ObjectId(id) });
+    
+    if (!existingPatient) {
+      console.error("⚠️ Patient not found:", id);
+      return res.status(404).json({ success: false, error: "Patient not found" });
+    }
+
+    console.log("✅ Patient found:", existingPatient);
+
+    // Compare the update data with the existing patient data to check if there are any actual changes
+    const changesDetected = Object.keys(updateData).some(key => updateData[key] !== existingPatient[key]);
+
+    if (!changesDetected) {
+      console.log("❌ No changes detected for update");
+      return res.status(400).json({ success: false, error: "No changes detected to update" });
+    }
+
+    // Log the full update query to debug
+    console.log("📝 Running update query for ID:", id);
+    console.log("🔄 Update Data:", updateData);
+
+    // Proceed with update
     const result = await db.collection("patients").findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: updateData },
       { returnDocument: "after" }
     );
 
-    if (!result.value) {
-      console.error("⚠️ Patient not found:", id);
-      return res.status(404).json({ success: false, error: "Patient not found" });
+    if (result.ok === 1 && result.value) {
+      console.log("✅ Update Success:", result.value);
+      return res.status(200).json({ success: true, data: result.value });
+    } else {
+      console.error("⚠️ Patient update failed or no changes were made:", id);
+      return res.status(400).json({ success: false, error: "Patient update failed or no changes were made" });
     }
-
-    console.log("✅ Update Success:", result.value);
-    res.status(200).json({ success: true, data: result.value });
 
   } catch (err) {
     console.error("🔥 Error updating patient:", err);
-    res.status(500).json({ success: false, error: err.message || "Server error." });
+    return res.status(500).json({ success: false, error: err.message || "Server error." });
   }
 };
-
-
 
 
 exports.deletePatient = async (req, res) => {
@@ -431,3 +530,34 @@ exports.assignProviders = async (req, res) => {
     res.status(500).json({ message: 'Error assigning providers' });
   }
 };
+
+
+// exports.searchPatients = async (req, res) => {
+//   try {
+//     const db = getDB();
+//     const query = req.query.query; // Match frontend key
+
+//     if (!query || query.trim() === "") {
+//       return res.status(400).json({ message: "Query parameter is required" });
+//     }
+
+//     const searchRegex = new RegExp(query, "i"); // Case-insensitive regex search
+
+//     const patients = await db.collection("patients").find({
+//       $or: [
+//         { first_name: { $regex: searchRegex } },
+//         { last_name: { $regex: searchRegex } }
+//       ],
+//       status: { $ne: 2 } // Exclude soft-deleted records
+//     }).toArray();
+
+//     res.status(200).json(patients);
+//   } catch (error) {
+//     console.error("Error searching patients:", error);
+//     res.status(500).json({ message: "Internal server error", error });
+//   }
+// };
+
+
+
+

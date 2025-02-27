@@ -30,7 +30,7 @@
               optionLabel="label"
               optionValue="value"
               placeholder="Filter by Status"
-              (onChange)="onStatusFilterChange($event, dt)"
+              (onChange)="onStatusFilterChange($event,dt)"
             ></p-dropdown>
   
             <!-- Global Search -->
@@ -38,7 +38,7 @@
               <input
                 pInputText
                 type="text"
-                (input)="onGlobalSearch($event, dt)"
+                (input)="onGlobalSearch($event,dt)"
                 placeholder="Search by First Name or Last Name"
               />
               <p-inputIcon>
@@ -90,8 +90,7 @@
             <ng-template #noProviders>
               <span>No Providers</span>
             </ng-template>
-          </td>
-          
+          </td>       
    <td>        
             <div class="flex gap-base">
               <!-- Edit Button -->

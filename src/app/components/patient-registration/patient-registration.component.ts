@@ -330,6 +330,66 @@ loadPatientDetails(patientId: string): void {
 }
 
 // Submit the form (create or update patient)
+// onSubmit(): void {
+//   const payload = {
+//     ...this.patient,
+//     city: this.patient.city.name,
+//     state: this.patient.state.name,
+//     country: this.patient.country.name,
+//     status: this.patient.status ? 1 : 0,
+//     selectedProviders: this.patient.selectedProviders  // Add selected providers
+//   };
+
+//   if (this.isEditMode && this.patientId) {
+//     // Update patient
+//     this.patientService.updatePatient(this.patientId, payload).subscribe({
+//       next: (response) => {
+//         console.log('Patient updated successfully', response);
+//         this.messageService.add({
+//           severity: 'success',
+//           summary: 'Success',
+//           detail: 'Patient updated successfully!'
+//         });
+//       // Delay navigation slightly to ensure UI updates properly
+//         setTimeout(() => {
+//           this.router.navigate(['/dashboard/viewPatients']);
+//         }, 500);
+//       },
+//       error: (error) => {
+//         console.error('Error updating patient', error);
+//         this.messageService.add({
+//           severity: 'error',
+//           summary: 'Error',
+//           detail: 'Failed to update patient. Please try again.'
+//         });
+//       }
+//     });
+//   } else {
+//     // Create new patient
+//     this.patientService.createPatient(payload).subscribe({
+//       next: (response) => {
+//         console.log('Patient created successfully', response);
+//         this.messageService.add({
+//           severity: 'success',
+//           summary: 'Success',
+//           detail: 'Patient created successfully!'
+//         });
+//         setTimeout(() => {
+//           this.resetForm();
+//         }, 1000);
+//       },
+//       error: (error) => {
+//         console.error('Error creating patient', error);
+//         this.messageService.add({
+//           severity: 'error',
+//           summary: 'Error',
+//           detail: 'Failed to create patient. Please try again.'
+//         });
+//       }
+//     });
+//   }
+// }
+
 onSubmit(): void {
   const payload = {
     ...this.patient,
@@ -344,13 +404,25 @@ onSubmit(): void {
     // Update patient
     this.patientService.updatePatient(this.patientId, payload).subscribe({
       next: (response) => {
-        console.log('Patient updated successfully', response);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Patient updated successfully!'
-        });
-        this.router.navigate(['/dashboard/viewPatients']);
+        if (response.success) {
+          console.log('Patient updated successfully', response);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Patient updated successfully!'
+          });
+          // Delay navigation slightly to ensure UI updates properly
+          setTimeout(() => {
+            this.router.navigate(['/dashboard/viewPatients']);
+          }, 500);
+        } else {
+          console.error('Error updating patient', response.error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: response.error || 'Failed to update patient. Please try again.'
+          });
+        }
       },
       error: (error) => {
         console.error('Error updating patient', error);

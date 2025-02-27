@@ -33,11 +33,11 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [ DashboardComponent,RouterLink,RouterModule,ButtonModule, SelectButtonModule, HttpClientModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
+  imports: [ NgClass,DashboardComponent,RouterLink,RouterModule,ButtonModule, SelectButtonModule, HttpClientModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
   providers: [MessageService],
 })
 export class LoginComponent {
-  
+  loginFailed: boolean = false;
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
@@ -47,24 +47,59 @@ export class LoginComponent {
     private messageService: MessageService
   ) {}
 
-  onLogin() {
-    // Convert email to lowercase for case-insensitive login
-    const caseInsensitiveEmail = this.email.toLowerCase();
+  // onLogin() {
+  //   // Convert email to lowercase for case-insensitive login
+  //   const caseInsensitiveEmail = this.email.toLowerCase();
 
+  //   this.authService.login(caseInsensitiveEmail, this.password).subscribe({
+  //     next: (response: any) => {
+  //       console.log('Login successful - Full response:', response);
+
+  //       // Ensure token exists in response
+  //       if (response && response.token) {
+  //         localStorage.setItem('authToken', response.token);
+
+  //         this.messageService.add({
+  //           severity: 'success',
+  //           summary: 'Success',
+  //           detail: 'Login successful, redirecting to main page...',
+  //         });
+
+  //         setTimeout(() => {
+  //           this.router.navigate(['/dashboard/home']);
+  //         }, 2000);
+  //       } else {
+  //         console.error('Token not found in response:', response);
+  //         alert('Token not found in response. Please check the backend API.');
+  //       }
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Login failed:', error);
+  //       this.messageService.add({
+  //         severity: 'error',
+  //         summary: 'Error',
+  //         detail: 'Login failed. Please check your credentials.',
+  //       });
+  //     },
+  //   });
+  // }
+  onLogin() {
+    const caseInsensitiveEmail = this.email.toLowerCase();
+  
     this.authService.login(caseInsensitiveEmail, this.password).subscribe({
       next: (response: any) => {
         console.log('Login successful - Full response:', response);
-
-        // Ensure token exists in response
+        this.loginFailed = false; // Reset login failure flag
+  
         if (response && response.token) {
           localStorage.setItem('authToken', response.token);
-
+  
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Login successful, redirecting to main page...',
           });
-
+  
           setTimeout(() => {
             this.router.navigate(['/dashboard/home']);
           }, 2000);
@@ -75,6 +110,7 @@ export class LoginComponent {
       },
       error: (error: any) => {
         console.error('Login failed:', error);
+        this.loginFailed = true; // Set flag to show error message
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -83,4 +119,5 @@ export class LoginComponent {
       },
     });
   }
+  
 }

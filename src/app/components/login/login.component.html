@@ -1,4 +1,4 @@
-<section class="bg-gray-50 dark:bg-gray-900 ">
+<section class="bg-gray-50 dark:bg-gray-900">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" class="flex items-center mb-6">
             <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
@@ -8,58 +8,35 @@
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                     Sign in to your account
                 </h1>
-                
-                <!-- Add novalidate to prevent browser interference -->
-                <form class="space-y-4 md:space-y-6" (ngSubmit)="onLogin()" #loginForm="ngForm" novalidate>
-                    
-                    <!-- Email Input -->
+                <form class="space-y-4 md:space-y-6" (ngSubmit)="onLogin()" #loginForm="ngForm">
                     <div>
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email  <span class="text-red-500">*</span></label>
-                        <input type="email" pInputText class="w-full" [(ngModel)]="email" name="email" required email #emailRef="ngModel" />
-                        
-                        <!-- Validation Message -->
-                        <div *ngIf="emailRef.invalid && emailRef.touched" class="text-red-500 text-sm">
-                            <p *ngIf="emailRef.errors?.required">Email is required.</p>
-                            <p *ngIf="emailRef.errors?.email">Enter a valid email.</p>
-                        </div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email <span class="text-red-500">*</span></label>
+                        <input type="email" pInputText class="w-full" [(ngModel)]="email" name="email" required email [ngClass]="{'p-invalid': (loginForm.submitted || loginForm.controls['email']?.touched) && loginForm.controls['email']?.errors}" />
+                        <small *ngIf="(loginForm.submitted || loginForm.controls['email']?.touched) && loginForm.controls['email']?.errors?.['required']" class="text-red-500 text-xs italic">Email is required.</small>
+                        <small *ngIf="(loginForm.submitted || loginForm.controls['email']?.touched) && loginForm.controls['email']?.errors?.['email']" class="text-red-500 text-xs italic">Please enter a valid email.</small>
                     </div>
-
-                    <!-- Password Input -->
                     <div>
-                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> Password <span class="text-red-500">*</span></label>
-                        <input type="password" pInputText class="w-full" [(ngModel)]="password" name="password" required minlength="6" #passwordRef="ngModel" />
-                        
-                        <!-- Validation Message -->
-                        <div *ngIf="passwordRef.invalid && passwordRef.touched" class="text-red-500 text-sm">
-                            <p *ngIf="passwordRef.errors?.required">Password is required.</p>
-                            <p *ngIf="passwordRef.errors?.minlength">Password must be at least 6 characters.</p>
-                        </div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password <span class="text-red-500">*</span></label>
+                        <input type="password" pInputText class="w-full" [(ngModel)]="password" name="password" required [ngClass]="{'p-invalid': (loginForm.submitted || loginForm.controls['password']?.touched) && loginForm.controls['password']?.errors}" />
+                        <small *ngIf="(loginForm.submitted || loginForm.controls['password']?.touched) && loginForm.controls['password']?.errors?.['required']" class="text-red-500 text-xs italic">Password is required.</small>
                     </div>
-
-                    <!-- Remember Me Checkbox -->
                     <div class="flex items-center justify-between">
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
-                                <input id="remember" type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" #rememberRef="ngModel"
+                                <input id="remember" aria-describedby="remember" type="checkbox"
                                     class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
                             </div>
                             <div class="ml-3 text-sm">
                                 <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
                             </div>
                         </div>
-                        <a [routerLink]="'/forgot-password'" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
+                        <a [routerLink]="'/forgot-password'"
+                            class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                     </div>
-
-                    <!-- Checkbox Validation Message -->
-                    <div *ngIf="!rememberMe && rememberRef.touched" class="text-red-500 text-sm">
-                        <p>You must check this box.</p>
-                    </div>
-
-                    <!-- Submit Button -->
+ 
                     <div class="w-full">
-                        <p-button label="Sign In" class="grid" type="submit" [disabled]="loginForm.invalid"></p-button>
+                        <p-button label="Sign In" class="grid" type="submit" [disabled]="!loginForm.form.valid"></p-button>
                     </div>
-
                     <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                         Don’t have an account yet? <a [routerLink]="'/register'"
                             class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
@@ -69,6 +46,6 @@
         </div>
     </div>
 </section>
-
-<!-- Toast Component -->
+ 
+<!-- Add the Toast component -->
 <p-toast></p-toast>

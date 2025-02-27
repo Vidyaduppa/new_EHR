@@ -1,4 +1,3 @@
-// forgot-password.component.ts
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -6,22 +5,14 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../../services/auth.service';
 import { MessageService } from 'primeng/api';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 import { ToastModule } from 'primeng/toast';
+
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [ToastModule,CommonModule ,FormsModule, InputTextModule, ButtonModule, RouterModule],
-  template: `
-    <p-toast></p-toast> <!-- Added Toast Component -->
-
-    <div class="forgot-password-container">
-      <h2>Forgot Password</h2>
-      <input type="email" pInputText [(ngModel)]="email" placeholder="Enter your email" />
-      <button pButton (click)="onSubmit()" label="Send Reset Link"></button>
-      <a routerLink="/login">Back to Login</a>
-    </div>
-  `,
+  imports: [ToastModule, CommonModule, FormsModule, InputTextModule, ButtonModule, RouterModule],
+  templateUrl: './forgot-password.component.html',
   styles: [`
     .forgot-password-container {
       display: flex;
@@ -31,7 +22,7 @@ import { ToastModule } from 'primeng/toast';
       margin: 2rem auto;
     }
   `],
-  providers:[MessageService],
+  providers: [MessageService],
 })
 export class ForgotPasswordComponent {
   email: string = '';
@@ -42,6 +33,15 @@ export class ForgotPasswordComponent {
   ) {}
 
   onSubmit() {
+    if (!this.email) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please enter your email'
+      });
+      return;
+    }
+
     this.authService.forgotPassword(this.email).subscribe({
       next: () => {
         this.messageService.add({
@@ -52,9 +52,9 @@ export class ForgotPasswordComponent {
       },
       error: () => {
         this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Password reset link sent '
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Something went wrong. Try again later.'
         });
       }
     });

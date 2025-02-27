@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,14 +13,24 @@ import { ToastModule } from 'primeng/toast';
   standalone: true,
   imports: [ToastModule, CommonModule, FormsModule, InputTextModule, ButtonModule, RouterModule],
   template: `
-    <p-toast></p-toast> <!-- Added Toast Component -->
-
-    <div class="reset-password-container">
-      <h2>Reset Password</h2>
-      <input type="password" pInputText [(ngModel)]="newPassword" placeholder="New Password" />
-      <input type="password" pInputText [(ngModel)]="confirmPassword" placeholder="Confirm Password" />
-      <button pButton (click)="onSubmit()" label="Reset Password"></button>
-    </div>
+    <section class="bg-gray-50 dark:bg-gray-900 ">
+      <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+          <a href="#" class="flex items-center mb-6">
+              <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
+          </a>
+          <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+              <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                  <h2 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                      Reset Password
+                  </h2>
+                  <input type="password" pInputText [(ngModel)]="newPassword" placeholder="New Password" class="w-full" />
+                  <input type="password" pInputText [(ngModel)]="confirmPassword" placeholder="Confirm Password" class="w-full" />
+                  <button pButton (click)="onSubmit()" label="Reset Password" class="w-full"></button>
+              </div>
+          </div>
+      </div>
+    </section>
+    <p-toast></p-toast>
   `,
   styles: [`
     .reset-password-container {

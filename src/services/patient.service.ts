@@ -61,4 +61,7 @@ export class PatientService {
     
     return this.http.post('/assignProviders', body);  // Modify the endpoint as needed
   }
+//   searchPatients(query: string): Observable<any> {
+//     return this.http.get(`${this.apiUrl}/search`, { params: { query } });
+// }
 }

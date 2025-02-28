@@ -210,7 +210,6 @@ users: any[] = [];  // To hold the list of users (providers)
 selectedProviders: string[] = [];  // Make sure this is declared and initialized
 patientForm!: FormGroup;
 submitted = false;
-
 patient: any = {
   first_name: '',
   last_name: '',
@@ -227,7 +226,7 @@ patient: any = {
   gender: '',
   allowShare: false,
   status: true,
-  
+  createdby:" "
 };
 
 isEditMode = false;
@@ -251,6 +250,8 @@ countries = [
   { name: 'Canada' },
   { name: 'United Kingdom' }
 ];
+
+ 
 
 constructor(
   private patientService: PatientService,
@@ -311,6 +312,7 @@ loadPatientDetails(patientId: string): void {
   this.patientService.getPatientById(patientId).subscribe(
     (response: any) => {
       if (response && response.data) {
+         // Clear the stack before loading new details
         this.patient = {
           ...response.data,
           city: { name: response.data.city },
@@ -318,9 +320,29 @@ loadPatientDetails(patientId: string): void {
           country: { name: response.data.country },
           dob: new Date(response.data.dob),
           updatedDate: new Date().toUTCString(),
-          selectedProviders: response.data.selectedProviders || [],  // Ensure this is correctly fetched
           status: response.data.status === 1 ? true : false,  // Handle status correctly, assuming 1 is 'true' and 0 is 'false'
+          selectedProviders: response.data.selectedProviders
+          ? response.data.selectedProviders.map((provider: any) => ({
+              provider_id: provider.provider_id,
+              full_name: provider.full_name,
+            }))
+          : [],
         };
+        // Prepare provider options for the dropdown
+        this.users = response.data.selectedProviders
+          ? response.data.selectedProviders.map((provider: any) => ({
+              label: provider.full_name, // Display name
+              value: provider.provider_id, // Unique ID
+            }))
+          : [];
+
+        // Extract provider IDs from `selectedProviders` for binding
+        this.selectedProviders = this.patient.selectedProviders.map((p: { provider_id: any; }) => p.provider_id);
+
+
+         console.log("Selected Providers (Edit Mode - Only Names):", this.patient.selectedProviders);
+
+       console.log('Mapped selected providers:', this.patient.selectedProviders);
         this.initializeForm();  // Re-initialize form with updated patient data
       } else {
         console.error('Patient not found');
@@ -398,9 +420,8 @@ onSubmit(): void {
     ...this.patient,
     city: this.patient.city.name,
     state: this.patient.state.name,
-    country: this.patient.country.name,
+    country: this.patient.country.name, status: this.patient.status ? 1 : 0,  // Add selected providers
     selectedProviders: this.patient.selectedProviders,
-    status: this.patient.status ? 1 : 0,  // Add selected providers
   };
 
   if (this.isEditMode && this.patientId) {
@@ -483,35 +504,65 @@ cancelEdit(): void {
 }
 
 
-  onProviderSelect(event: any): void {
-    console.log('Provider selected:', event.value);
-    console.log('Selected provider IDs:', this.selectedProviders);
+  // onProviderSelect(event: any): void {
+  //   console.log('Provider selected:', event.value);
+  //   console.log('Selected provider IDs:', this.selectedProviders);
   
-    // Ensure selectedProviders is not empty and contains valid data
-    if (this.selectedProviders && this.selectedProviders.length > 0) {
-      const selectedProvidersDetails = this.selectedProviders.map((providerId: string) => {
-        const provider = this.users.find(user => user.value === providerId);
+  //   // Ensure selectedProviders is not empty and contains valid data
+  //   if (this.selectedProviders && this.selectedProviders.length > 0) {
+  //     const selectedProvidersDetails = this.selectedProviders.map((providerId: string) => {
+  //       const provider = this.users.find(user => user.value === providerId);
     
-      if (provider) {
-        // Store full name instead of splitting
-        const full_name = provider.label; 
+  //     if (provider) {
+  //       // Store full name instead of splitting
+  //       const full_name = provider.label; 
       
-        return {
-          provider_id: provider.value,
-          full_name // Save as a single field
-        };
+  //       return {
+  //         provider_id: provider.value,
+  //         full_name // Save as a single field
+  //       };
+  //     }
+  //     return null;
+  //     }).filter(Boolean);
+      
+  //     console.log('Mapped selected providers:', selectedProvidersDetails);
+      
+  //     // Assign selected provider details to patient object
+  //     this.patient.selectedProviders = selectedProvidersDetails;
+  //   } else {
+  //     this.patient.selectedProviders = [];  // Ensure it’s empty if no providers are selected
+  //   }
+  // }
+selectedProviderStack: string[] = []; // Stack for provider names
+
+onProviderSelect(event: any): void {
+  console.log('Provider selected:', event.value);
+  console.log('Selected provider IDs:', this.selectedProviders);
+
+  if (this.selectedProviders && this.selectedProviders.length > 0) {
+    this.patient.selectedProviders = this.selectedProviders.map((providerId: string) => {
+      const provider = this.users.find(user => user.value === providerId);
+      if (provider) {
+        const full_name = provider.label;
+
+        // Stack logic: If not already in stack, push it
+        if (!this.selectedProviderStack.includes(full_name)) {
+          this.selectedProviderStack.push(full_name);
+        }
+
+        return { provider_id: provider.value, full_name };
       }
       return null;
-      }).filter(Boolean);
-      
-      console.log('Mapped selected providers:', selectedProvidersDetails);
-      
-      // Assign selected provider details to patient object
-      this.patient.selectedProviders = selectedProvidersDetails;
-    } else {
-      this.patient.selectedProviders = [];  // Ensure it’s empty if no providers are selected
-    }
+    }).filter(Boolean);
+  } else {
+    this.patient.selectedProviders = [];
+    this.selectedProviderStack = []; // Reset stack if nothing is selected
   }
+
+  console.log('Updated selected providers:', this.patient.selectedProviders);
+  console.log('Provider Stack:', this.selectedProviderStack);
+}
+
   
 }  
 

@@ -46,7 +46,7 @@ export class DashboardComponent implements OnInit {
     // Fetch the logged-in user's email (example)
     this.userEmail = this.authService.getUserEmail(); // Replace with your logic
     this.userEmailInitial = this.userEmail.charAt(0).toUpperCase(); // Get the first letter for the avatar
- 
+  console.log('User email:', this.userEmail);
     // Define menu items
     this.items = [
       {

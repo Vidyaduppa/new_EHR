@@ -82,7 +82,7 @@
             <ng-container *ngIf="patient?.selectedProviders?.length > 0; else noProviders">
               <ng-container *ngFor="let provider of patient.selectedProviders; let last = last">
                 <span *ngIf="provider?.full_name" pTooltip="{{ provider.full_name }}" tooltipPosition="top">
-                  {{ provider.full_name.charAt(0) }}
+                  {{  provider.full_name.charAt(0).toUpperCase()}}
                 </span>
                 <span *ngIf="!last">, </span> <!-- Adds a comma between provider names -->
               </ng-container>

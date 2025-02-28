@@ -45,8 +45,9 @@ const patientSchema = {
   updatedDate: { type: Date, default: new Date() },
   selectedProviders: [{
     provider_id: String,
-    first_name: String,
-    last_name: String,
+   full_name:String,
+   createdBy: { type: String, required: true }, // Store the username of the logged-in user
+  updatedBy: { type: String }, // Store the username of the last modifier (optional)
   }],
   
 };

@@ -26,6 +26,8 @@ import { DrawerModule } from 'primeng/drawer';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { timestamp } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { AuthService } from '../../../services/auth.service'; // Import the AuthService
+
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
@@ -64,7 +66,7 @@ export class RegistrationComponent implements OnInit {
   submitted = false;
   backendErrorMessage: string | null = null; // To store backend error messages
  
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {}
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router,private authservice:AuthService) {}
  
   ngOnInit(): void {
     this.registrationForm = this.fb.group(
@@ -143,26 +145,26 @@ export class RegistrationComponent implements OnInit {
  
     const { first_name, last_name, email, password } = this.registrationForm.value;
  
-    // Send registration data to the backend
-    this.http.post('http://localhost:5000/api/auth/register', { first_name, last_name, email, password,created_at: timestamp, 
-      updated_at: timestamp  }).subscribe({
+
+    // Call the service method for registration
+    this.authservice.register({ first_name, last_name, email, password }).subscribe({
       next: (response) => {
         console.log('Registration Successful', response);
         alert('Registration successful!');
-        this.registrationForm.reset(); // Reset the form
+        this.registrationForm.reset();
         this.submitted = false;
-        this.router.navigate(['/login']); // Navigate to the users page
+        this.router.navigate(['/login']);
       },
       error: (error) => {
         console.error('Registration Failed', error);
- 
+
         // Handle backend error messages
         if (error.status === 400 && error.error?.error?.message) {
-          this.backendErrorMessage = error.error.error.message; // Set backend error message
+          this.backendErrorMessage = error.error.error.message;
         } else if (error.status === 409 || error.error?.message?.includes('already exists')) {
-          this.backendErrorMessage = 'This email already exists. Please use a different email.'; // Email exists error
+          this.backendErrorMessage = 'This email already exists. Please use a different email.';
         } else {
-          this.backendErrorMessage = 'Registration failed. Please try again.'; // Generic error message
+          this.backendErrorMessage = 'Registration failed. Please try again.';
         }
       },
     });

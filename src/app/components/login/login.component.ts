@@ -11,7 +11,7 @@ import { MultiSelect, MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { CardModule } from 'primeng/card';
@@ -33,7 +33,7 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [ NgClass,DashboardComponent,RouterLink,RouterModule,ButtonModule, SelectButtonModule, HttpClientModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
+  imports: [ NgIf,NgClass,DashboardComponent,RouterLink,RouterModule,ButtonModule, SelectButtonModule, HttpClientModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule],
   providers: [MessageService],
 })
 export class LoginComponent {
